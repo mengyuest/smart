@@ -40,8 +40,10 @@ public class MainRecord{
 
     //Historical network state and measurement
     public HashMap<Integer, LinkedList<int[]>> sensorFlowTimeMap;
+    public String gsonOfSensorFlow;
     public HashMap<Integer, int[]> demandTagTimeMap;
-    public HashMap<Integer, LinkedList<Double[]>> demandFlowTimeMap;
+    public HashMap<Integer, LinkedList<double[]>> demandFlowTimeMap;
+    public String gsonOfDemandFlow;
 
 
     //Output datas

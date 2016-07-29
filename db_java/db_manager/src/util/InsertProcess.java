@@ -4,11 +4,13 @@
 
 package util;
 
+import java.lang.reflect.Type;
 import java.util.regex.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import data.*;
 
 import java.text.*;
@@ -165,7 +167,7 @@ public class InsertProcess {
                                     dtaparamData.updateInterval = Integer.parseInt(metadata);
                                     break;
                                 case "AdvanceInterval":
-                                    dtaparamData.advancedInterval = Integer.parseInt(metadata);
+                                    dtaparamData.advanceInterval = Integer.parseInt(metadata);
                                     break;
                                 case "MaxEstIter":
                                     dtaparamData.maxEstIter = Integer.parseInt(metadata);
@@ -481,19 +483,19 @@ public class InsertProcess {
             BufferedReader b = new BufferedReader(new InputStreamReader(f));
             String line;
             int len = 0;
-            HashMap<Integer, LinkedList<Double[]>> hashMap  = new HashMap<>();
+            HashMap<Integer, LinkedList<double[]>> hashMap  = new HashMap<>();
             HashMap<Integer, int[]> timeDict = new HashMap<>();
             String[] seg = new String[3];
-            LinkedList<Double[]> demandSeriesList = new LinkedList<>();
+            LinkedList<double[]> demandSeriesList = new LinkedList<>();
             int[] timeSeries = new int[2];
             Integer timeLabel;
-            Double[] demandSeries = new Double[3];
+            double[] demandSeries = new double[3];
             while ((line = b.readLine()) != null) {
                 len = line.length();
                 if(len>5){
                     char firstChar = line.charAt(0);
                     if(firstChar=='{'){
-                        demandSeries = new Double[3];
+                        demandSeries = new double[3];
                         seg = line.substring(1, len-2).split("\\s+");
                         demandSeries[0] = Double.parseDouble(seg[0]);
                         demandSeries[1] = Double.parseDouble(seg[1]);
@@ -517,6 +519,7 @@ public class InsertProcess {
             Gson gson = new Gson();
             String strOfHashMap = gson.toJson(hashMap);
             String strOfLinkedList = gson.toJson(timeDict);
+            mainRecord.gsonOfDemandFlow = strOfHashMap;
             String[] strList = {strOfLinkedList,strOfHashMap};
             return strList;
 
@@ -561,6 +564,7 @@ public class InsertProcess {
             mainRecord.sensorFlowTimeMap = hashMap;
             Gson gson = new Gson();
             String strOfHashMap = gson.toJson(hashMap);
+            mainRecord.gsonOfSensorFlow = strOfHashMap;
             return strOfHashMap;
 
         }catch (FileNotFoundException fnfe){
@@ -650,7 +654,11 @@ public class InsertProcess {
                 sen_flw_str,sen_spd_str,precision);
 
         DBD.sqlUpdate(command,shallPrintSQL);
+        List<String> result = DBD.sqlQuery(String.format("SELECT dataid FROM main WHERE " +
+                "runningDate ='%s' and runningTime='%s' ",dateStr,timeStr),shallPrintSQL);
+        mainRecord.dataId = Integer.parseInt(result.get(0).trim());
 
+        Tool.println("Insert main record " + mainRecord.dataId);
 
     }
 
@@ -822,6 +830,251 @@ public class InsertProcess {
         mainRecord = new MainRecord();
     }
 
+    public Boolean IsRecordFromDatabaseValid(){
+        if(IsDtaparamDataValid()
+                &&IsNetworkDataValid()
+                &&IsBehaviorDataValid()
+                &&IsSupplyDataValid()
+                &&IsMainRecordValid()){
+
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public Boolean IsDtaparamDataValid(){
+        String result = queryResult("dtaparam","*");;
+        int dtaparamColumnNum=9;
+
+        if(result==null) {
+            return false;
+        }
+        String[] seg = result.split(",");
+        if(seg.length!= dtaparamColumnNum){
+            return false;
+        }
+
+        if(Integer.parseInt(seg[0])!=dtaparamData.dtaparamId){
+            return false;
+        }
+        if(Integer.parseInt(seg[3])!=dtaparamData.odInterval){
+            return false;
+        }
+        if(Integer.parseInt(seg[4])!=dtaparamData.horizonLenghth){
+            return false;
+        }
+        if(Integer.parseInt(seg[5])!=dtaparamData.updateInterval){
+            return false;
+        }
+        if(Integer.parseInt(seg[6])!=dtaparamData.advanceInterval){
+            return false;
+        }
+        if(Integer.parseInt(seg[7])!=dtaparamData.maxEstIter){
+            return false;
+        }
+        if(Integer.parseInt(seg[8])!=dtaparamData.maxPredIter){
+            return false;
+        }
+        MYtime testTime = new MYtime();
+        testTime.getDate(seg[1]);
+        if(testTime.getAbsoluteSecond()!=dtaparamData.startSimulation.getAbsoluteSecond()){
+            return false;
+        }
+        testTime.getDate(seg[2]);
+        if(testTime.getAbsoluteSecond()!=dtaparamData.stopSimulation.getAbsoluteSecond()){
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean IsNetworkDataValid(){
+        String result = queryResult("network","*");
+        int networkColumnNum=6;
+
+        if(result==null) {
+            return false;
+        }
+        String[] seg = result.split(",");
+        if(seg.length!= networkColumnNum){
+            return false;
+        }
+
+        if(Integer.parseInt(seg[0])!=networkData.networkId){
+            return false;
+        }
+        if(seg[1].compareTo(networkData.name)!=0){
+            return false;
+        }
+        if(Integer.parseInt(seg[2])!=networkData.nodeNum){
+            return false;
+        }
+        if(Integer.parseInt(seg[3])!=networkData.linkNum){
+            return false;
+        }
+        if(Integer.parseInt(seg[4])!=networkData.segmentNum){
+            return false;
+        }
+        if(Integer.parseInt(seg[5])!=networkData.laneNum){
+            return false;
+        }
+
+        return true;
+    }
+
+    public Boolean IsBehaviorDataValid(){
+        if(!Tool.testDoubleArraySame(queryResult("behavior","habitual"),behaviorData.habitualArray)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("behavior","preTrip"),behaviorData.preTripArray)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("behavior","enRouteDesc"),behaviorData.enRouteDescArray)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("behavior","enRoutePresc"),behaviorData.enRoutePrescArray)){
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean IsSupplyDataValid(){
+        if(!Tool.testIntArraySame(queryResult("supplyparam","SegmentId"),supplyData.segmentIdList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","alpha"),supplyData.alphaList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","beta"),supplyData.betaList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","freeFlowSpeed"),supplyData.freeFlowSpeedList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","jamDensity"),supplyData.jamDensityList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","Kmin"),supplyData.kminList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","SegmentCapacity"),supplyData.segmentCapacityList)){
+            return false;
+        }
+        if(!Tool.testDoubleArraySame(queryResult("supplyparam","Vmin"),supplyData.vminList)){
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean IsMainRecordValid(){
+        if(!Tool.testIntArraySame(queryResult("main","dtaparamId,networkId,behaviorId,supplyParamId,intervalNum"),
+                new int[]{mainRecord.dtaparamId,mainRecord.networkId,mainRecord.behaviorId
+                        ,mainRecord.supplyparamId,mainRecord.intervalNum})){
+            return false;
+        }
+
+        if(!Tool.testStringArraySame(queryResult("main","simulationDate,simulationStartTime,simulationStopTime"),
+                new String[]{mainRecord.simulationDate,mainRecord.simulationStartTime,mainRecord.simulationStopTime})){
+            return false;
+        }
+
+        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("demand_time",
+                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
+                mainRecord.demandTagTimeMap)){
+            return false;
+        }
+
+        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("estimateOD",
+                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
+                mainRecord.odFlowArrayTimeMap)){
+            return false;
+        }
+
+        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("sensorData",
+                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
+                mainRecord.sensorDataArrayTimeMap)){
+            return false;
+        }
+
+        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("sen_flw",
+                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
+                mainRecord.sen_Flw_TimeMap)){
+            return false;
+        }
+
+        if(!Tool.testDoubleArrayMap((HashMap) GetJsonObjectFromDatabase("sen_spd",
+                new TypeToken<HashMap<Integer,double[]>>(){}.getType()),
+                mainRecord.sen_Spd_TimeMap)){
+            return false;
+        }
+
+// FIXME! TIME CONSUMING- just compare gson str? that maybe way much faster~
+//        if(!Tool.testDoubleLinkedListArrayMap((HashMap) GetJsonObjectFromDatabase("demand_flow",
+//                new TypeToken<HashMap<Integer,LinkedList<double[]>>>(){}.getType()),
+//                mainRecord.demandFlowTimeMap)){
+//            return false;
+//        }
+//
+//        if(!Tool.testIntLinkedListArrayMap((HashMap) GetJsonObjectFromDatabase("sensor_flow",
+//                new TypeToken<HashMap<Integer,LinkedList<int[]>>>(){}.getType()),
+//                mainRecord.sensorFlowTimeMap)){
+//            return false;
+//        }
+
+        String gsonStr_Table = queryResult("main","demand_flow");
+
+        if(!Tool.testStringSame(mainRecord.gsonOfDemandFlow,gsonStr_Table)){
+            return false;
+        }
+
+        gsonStr_Table = queryResult("main","sensor_flow");
+
+        if(!Tool.testStringSame(mainRecord.gsonOfSensorFlow,gsonStr_Table)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public String queryResult(String tableName, String selectCol){
+        int id=0;
+        String idname = tableName+"id";
+        switch (tableName){
+            case "dtaparam":
+                id = mainRecord.dtaparamId;
+                break;
+            case "network":
+                id = mainRecord.networkId;
+                break;
+            case "behavior":
+                id = mainRecord.behaviorId;
+                break;
+            case "supplyparam":
+                id = mainRecord.supplyparamId;
+                break;
+            case "main":
+                id = mainRecord.dataId;
+                idname = "dataid";
+                break;
+
+        }
+        List<String> result = DBD.sqlQuery(String.format("SELECT %s FROM %s WHERE %s=%d",selectCol,tableName,idname,id),false);
+        if(result==null){
+            return null;
+        }
+        else{
+            return result.get(0);
+        }
+    }
+
+
+    public Object GetJsonObjectFromDatabase(String jsonCol,Type classOfT){
+        String jsonStr = queryResult("main",jsonCol);
+        Gson gson = new Gson();
+        Object o = gson.fromJson(jsonStr, classOfT);
+        return o;
+    }
 
     public static void main(String[] args){
         InsertProcess dbi = new InsertProcess();
@@ -850,7 +1103,12 @@ public class InsertProcess {
 
         //TODO:Check database data validity~
         Tool.println("Check validity!");
-
+        if(dbi.IsRecordFromDatabaseValid()){
+            Tool.println("Validity Approved!");
+        }
+        else{
+            Tool.println("Incorrect Validity!");
+        }
 
         dbi.DBD.disconnect();
     }

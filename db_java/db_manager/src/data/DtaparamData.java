@@ -10,7 +10,7 @@ public class DtaparamData{
     public int odInterval;
     public int horizonLenghth;
     public int updateInterval;
-    public int advancedInterval;
+    public int advanceInterval;
     public int maxEstIter;
     public int maxPredIter;
 
