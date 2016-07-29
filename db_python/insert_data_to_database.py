@@ -1,0 +1,366 @@
+#!/usr/bin/python2
+
+#BRIEF : Insert data (DynaMIT inputs and outputs) to the database, preparing for the regression in the following procedures. Using the postgre drive psycopg.
+#AUTHOR: MENG YUE
+#DATE  : July 20 2016
+
+import psycopg2
+import re
+import datetime
+import os
+import pickle
+
+intervalNum=0
+intervalValue=0
+simuStartTime=""
+simuStopTime=""
+
+def dtaparam_loader(cur, path, configPath):
+	isSearched=False
+	f = open(path,'r')
+	ff=f.readlines()
+	conf= open(configPath, 'r')
+	paraStr=""
+	dataStr=""
+	queryStr=""
+	paraList=[]
+	dataList=[""]	
+
+	for confLine in conf:
+		realLine=delimitComment(confLine)
+		seg = realLine.split('"')
+		segCount = len(seg)
+		if(segCount<3):
+			continue
+		elif(segCount==3):
+			isSearched=(seg[1]=='dtaparam')
+		elif(isSearched):
+			colName=seg[1]
+			paraList.append(colName)
+			pattern = re.compile('(?<!/)[ ]*%s[ ]*=[ ]*[^/]*'%(colName))
+			for line in ff:
+				m=pattern.match(line)
+				if (m!=None):
+					metadata = m.group()
+					metadata = metadata.split('=')[1].strip()
+					if(':' in metadata):
+						metadata="'"+metadata+"'"
+					dataList.append(metadata)
+		else:
+			continue	
+	
+	global intervalNum
+	global intervalValue
+	global simuStartTime
+	global simuStopTime
+	simuStartTime=dataList[1][1:-1]
+	simuStopTime=dataList[2][1:-1]
+	timestr1=simuStartTime.split(':')
+	timestr2=simuStopTime.split(':')
+	time1=[]
+	time2=[]
+	for i in range(0,3):
+		time1.append((int)(timestr1[i]))
+		time2.append((int)(timestr2[i]))
+	t1 = datetime.datetime(2016,7,4,time1[0],time1[1],time1[2])
+	t2 = datetime.datetime(2016,7,4,time2[0],time2[1],time2[2])
+	delta=(t2-t1).seconds
+	intervalValue = (int)(dataList[3])
+	intervalNum = (int)((delta/60)/intervalValue)
+	print "Interval number = " + str(intervalNum)
+		
+	for i in range(1,len(paraList)):
+		paraStr=paraStr+paraList[i]+','
+		dataStr=dataStr+dataList[i]+','
+		queryStr=queryStr+"%s=%s AND "%(paraList[i],dataList[i])
+	queryStr = queryStr[:-4]
+	paraStr = paraStr[:-1]
+	dataStr = dataStr[:-1]
+	
+	return insertIfNotExistAndReturnId(cur, "dtaparam", queryStr, paraStr, dataStr)
+
+def network_loader(cur, path, configPath):
+	pureFileName = (path.split('/'))[-1].strip()[:-4]
+	f=open(path,'r')
+	ff=f.readlines()
+	Nnode=0
+	Nlink=0
+	Nseg =0
+	Nlane=0
+	for line in ff:
+		realLine = delimitComment(line)
+		if "[Nodes]" in realLine:
+			Nnode=(int)(realLine.split(':')[1])
+			break
+	for line in ff:
+		realLine = delimitComment(line)
+		if "[Links]" in realLine:
+			data=realLine.split(':')
+			Nlink=(int)(data[1])
+			Nseg =(int)(data[2])
+			Nlane=(int)(data[3])
+			break
+	queryStr="Name='%s' AND NodeNum=%d AND LinkNum=%d AND SegmentNum=%d AND LaneNum=%d"%(pureFileName,Nnode,Nlink,Nseg,Nlane)
+	paraStr = 'Name, NodeNum, LinkNum, SegmentNum, LaneNum'
+	dataStr = "'%s', %d, %d, %d, %d"%(pureFileName, Nnode,Nlink,Nseg,Nlane)
+
+	return insertIfNotExistAndReturnId(cur, "network", queryStr, paraStr, dataStr)
+
+def behavior_loader(cur,path,configPath):
+	f=open(path,'r')
+	ff=f.readlines()
+	habitualList=[0,0,0,0,0]
+	preTripList=[0,0,0,0,0]
+	enRoutePrescList=[0,0,0,0,0]
+	enRouteDescList=[0,0,0,0,0]
+	result = ""
+	array_dict ={
+			r'[Habitual]': habitualList,
+			r'[PreTrip]': preTripList,
+			r'[EnRoutePresc]': enRoutePrescList,
+			r'[EnRouteDesc]': enRouteDescList
+		}
+
+	id_dict ={
+			r'bTTlowVOT':0,
+			r'bTTmedVOT':1,
+			r'bTThiVOT':2,
+			r'bVOTMean':3,
+			r'bVOTSD':4
+		}
+
+	bracketTest=re.compile(r'\[(.*)\]')
+	columnTest=re.compile(r'bTTlowVOT|bTTmedVOT|bTThiVOT|bVOTMean|bVOTSD')
+	for line in ff:
+		realLine = delimitComment(line).strip()
+		tempResult=bracketTest.match(realLine)
+		if (tempResult!=None):
+			if tempResult.group() in array_dict:
+				result = tempResult.group()
+			continue		
+		if ("VOT" in realLine):
+			columnName = realLine.split('=')[0].strip()
+			result
+			array_dict[result]
+			columnName
+			id_dict[columnName]
+			(array_dict[result])[id_dict[columnName]]=float(((realLine.strip()).split('='))[1])
+	
+	s1=pickle.dumps(habitualList)
+	s2=pickle.dumps(preTripList)
+	s3=pickle.dumps(enRoutePrescList)
+	s4=pickle.dumps(enRouteDescList)
+	queryStr="Habitual='%s' AND PreTrip='%s' AND EnRoutePresc='%s' AND EnRouteDesc='%s'"%(s1,s2,s3,s4)
+        paraStr = 'Habitual, PreTrip, EnRoutePresc, EnRouteDesc'
+        dataStr = "'%s', '%s', '%s', '%s'"%(s1,s2,s3,s4)
+        
+	return insertIfNotExistAndReturnId(cur, "behavior", queryStr, paraStr, dataStr)
+
+def supply_loader(cur, path, configPath):
+	paraList=["SegmentId", "freeFlowSpeed","jamDensity","alpha","beta","SegmentCapacity","Vmin","Kmin"]
+	f=open(path,'r')
+	ff=f.readlines()
+	regInt='^0$|^[1-9]\d*$'
+	regFloat='^0\.\d+$|^[1-9]\d*\.\d+$'
+	regif=regInt+'|'+regFloat
+	pattern=re.compile(r'\{.*['+regif+r'].*\}')
+	vec_list=[[],[],[],[],[],[],[],[]]
+	vec_seri_list=['','','','','','','','']
+	for line in ff:
+		realLine = delimitComment(line)
+		m=pattern.match(realLine)
+		if(m!=None):
+			metadata=((m.group().strip())[1:-1]).split('\t')
+			for i in range(0,8):
+				vec_list[i].append((float)(metadata[i]))
+#		raw_input("Press Enter to continue: ")
+#	print "\r\n"
+	dataStr=''
+	queryStr=''
+	for i in range(0,8):
+		vec_seri_list = pickle.dumps(vec_list[i])
+		queryStr=queryStr+"%s='%s' AND "%(paraList[i],vec_seri_list)
+		dataStr=dataStr+"'"+vec_seri_list+"',"
+	
+	dataStr=dataStr[:-1]
+	queryStr=queryStr[:-4]
+	paraStr="SegmentId,freeFlowSpeed,jamDensity,alpha,beta,SegmentCapacity,Vmin,Kmin"
+	
+
+	return insertIfNotExistAndReturnId(cur, "supplyparam" , queryStr, paraStr, dataStr)
+			
+#col:||dtaparamId|networkId|behaviorId|supplyparamId|startTime|demandDim|simuInfo|odFlow|sensorData|i3d_flow|i3d_speed|i3d_density|i3d_queue|hmatrix 
+def main_loader(cur, path, configPath, id_list):
+	demandDim_which_i_dont_know = 1
+	simuInfo_which_i_also_dont_know="debug infomation todo"
+
+	odFlowPath="/home/dynamit/DynaMIT/temp/"
+	sensorDataPath="/home/dynamit/DynaMIT/"
+	i3d_path="/home/dynamit/DynaMIT/output/"
+	
+	odFlowList=[]
+	sensorDataList=[]
+
+	# six files ( TEMP:odFlow sensorData and i3d_flow)
+	for interval in range(1,intervalNum+1):
+		filePath=(searchFiles(odFlowPath,r"estimatedOD\[.*\]"+(str)(interval*2)+".dat"))[0]
+		f=open(filePath,'r')
+		for line in f:
+			if((line.strip()).isdigit()):
+				odFlowList.append((int)(line))
+		
+		f.close()
+		
+
+		filePath=(searchFiles(sensorDataPath,r"Sim"+(str)(interval*3)+".dat"))[0]
+		f=open(filePath,'r')
+		for line in f:
+			if((line.strip()).isdigit()):
+				sensorDataList.append((int)(line))
+		f.close()	
+
+		timeSpanStr=timespan_generator(interval)
+		i3d_flw_str = i3d_str_generator(i3d_path,"flw","Est",timeSpanStr)
+		i3d_spd_str = i3d_str_generator(i3d_path,"spd","Est",timeSpanStr)
+		i3d_dsy_str = i3d_str_generator(i3d_path,"dsy","Est",timeSpanStr)
+		i3d_que_str = i3d_str_generator(i3d_path,"que","Est",timeSpanStr)
+		
+			
+		command = (
+		"INSERT INTO main(" +
+		"dtaparamId, networkId,behaviorId,supplyparamId," +
+		"startTime,demandDim,simuInfo,odFlow,sensorData," +
+		"i3d_flw, i3d_spd, i3d_dsy, i3d_que) " +
+		"VALUES(%d,%d,%d,%d,%d,%d,'%s','%s','%s','%s','%s','%s','%s')" %  
+		(id_list[0],id_list[1],id_list[2],id_list[3],
+		interval, 0,"debug", 
+		pickle.dumps(odFlowList),
+		pickle.dumps(sensorDataList),
+		i3d_flw_str,i3d_spd_str,i3d_dsy_str,i3d_que_str
+		))
+			
+		cur.execute(command)
+		
+		print "DynaMIT>> Inserted record simulated during %s "%(timeSpanStr)
+
+#Input Params (, , , )
+#i3d_Path- directory for the i3d files
+#stateStr- "flw"(flow), "spd"(speed), "dsy"(density), "que"(queue)
+#behaviorStr- "Est"(estimatation), "Pred"(prediction)
+#timeSpanStr- eg "084000-084500"
+
+#Output Params ()
+#String of the serialized i3d_array
+def i3d_str_generator(i3d_Path, stateStr,behaviorStr,timeSpanStr):
+	i3d_array=[]
+	filePath=(searchFiles(i3d_Path,"i3d_%s_%s_%s.out"%(stateStr,behaviorStr,timeSpanStr)))[0]
+	f=open(filePath,'r')
+	for line in f:
+		seg=((line.strip()).split("\t"))
+		for segitem in seg:
+			if(segitem.isdigit()):
+				i3d_array.append((int)(segitem))
+	f.close()
+	return pickle.dumps(i3d_array)
+
+#Input ()
+#timeIndex- 1,2,3...N
+
+#Output()
+#timeSpanStr- eg: 084000-084500
+def timespan_generator(timeIndex):
+	fromTimeStr=getNextTime(simuStartTime,60*(timeIndex-1)*intervalValue,'')
+	toTimeStr=getNextTime(simuStartTime,60*timeIndex*intervalValue,'')
+	return "%s-%s"%(fromTimeStr,toTimeStr)
+
+
+#timeStr format 08:40:00 || time interval use seconds
+def getNextTime(timeStr, timeInterval, splitStr):
+	timeStrList=timeStr.split(':')
+        timeIntList=[]
+        for timeStr in timeStrList:
+                timeIntList.append((int)(timeStr))
+        t1 = datetime.datetime(2016,7,4,timeIntList[0],timeIntList[1],timeIntList[2])
+        t2 = t1 + datetime.timedelta(seconds=timeInterval)
+        return "{:02}".format(t2.hour)+splitStr+"{:02}".format(t2.minute)+splitStr+"{:02}".format(t2.second)
+
+
+def delimitComment(rawStr):
+	index1=len(rawStr)
+	index2=len(rawStr)
+	if r"//" in rawStr:
+        	index1 = rawStr.index("//")
+	if r"#"	in rawStr:
+		index2 = rawStr.index("#")
+	index = min(index1,index2)
+	return rawStr[:index]
+
+def searchFiles(rootdir,pattern):
+	FileList=[]
+	p=re.compile(pattern)
+	for root,subFolders,files in os.walk(rootdir):
+		for f in files:
+			if p.match(f)!=None:
+				FileList.append(os.path.join(root,f))
+	return FileList
+
+def insertIfNotExistAndReturnId(cur, tableName, queryStr, paraStr, dataStr):
+	idName = tableName+"Id"
+	querySQLCommand = "SELECT %s FROM %s WHERE %s ;" %(idName,tableName,queryStr)
+	cur.execute(querySQLCommand)
+        result=cur.fetchone()
+        if result==None:
+                cur.execute('INSERT INTO %s(%s) VALUES(%s)' % (tableName, paraStr,dataStr))
+                cur.execute(querySQLCommand)
+                return cur.fetchone()
+        else:
+                return result
+
+
+if __name__ == "__main__":
+
+	col_enum=['dtaparam','network','behavior','supplyparam']
+	
+	id_dict={
+	'dtaparam': 0,
+	'network' : 1,
+	'behavior': 2,
+	'supplyparam':3
+		}
+
+	id_list=[]	
+
+	func_dict={
+	'dtaparam': dtaparam_loader ,
+	'network' : network_loader,
+	'behavior': behavior_loader,
+	'supplyparam': supply_loader
+		}
+
+	path_dict={
+	'dtaparam': '/home/dynamit/DynaMIT/dtaparam.dat',
+	'network': '/home/dynamit/DynaMIT/july_demo_network_v11.dat',
+	'behavior':'/home/dynamit/DynaMIT/BehavioralParameters.dat',
+	'supplyparam': '/home/dynamit/DynaMIT/supplyparam.dat',
+		}
+
+	configPath='/home/dynamit/student/mengyue/drill/db_python/database.config'
+
+
+	conn = psycopg2.connect(dbname="dyna", user="dynamit",host="/tmp")
+        cur = conn.cursor()
+	
+	print func_dict.keys()
+	
+	for keyword in col_enum:
+		func = func_dict[keyword]
+		path = path_dict[keyword]
+		id_dict[keyword] = (func(cur, path, configPath))[0]
+		id_list.append(id_dict[keyword])
+		print keyword+" id => "+(str)(id_dict[keyword])
+	main_loader(cur, path,configPath, id_list)
+
+	conn.commit()
+	cur.close()
+	conn.close()
+	print "finished loading!"

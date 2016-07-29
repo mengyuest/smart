@@ -1,0 +1,7 @@
+
+public class java_practise {
+	public void main()
+	{
+		System.out.println("Helloworld!");
+	}
+}

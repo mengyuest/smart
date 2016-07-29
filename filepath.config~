@@ -1,0 +1,22 @@
+// Configuraion for file path
+// MENG YUE
+// Created at July,28,2016
+//
+// Standard format:
+// XXPath = ~/dynamit/DynaMIT/XX.dat
+// YYPath = ~/dynamit/DynaMIT/YY.txt
+// ZZPath = ~/dynamit/DynaMIT/ZZ.out
+//
+// Warning: please strictly follow the format. No more syntax adding other than whitespace. Or it may crash!
+
+config		= /home/dynamit/student/mengyue/drill/database.config
+dtaparam	= /home/dynamit/student/mengyue/drill/DynaMIT/dtaparam.dat 
+network		= /home/dynamit/student/mengyue/drill/DynaMIT/july_demo_network_disabled.dat	
+behavior	= /home/dynamit/student/mengyue/drill/DynaMIT/BehavioralParameters.dat
+supplyparam	= /home/dynamit/student/mengyue/drill/DynaMIT/supplyparam.dat
+sensor		= /home/dynamit/student/mengyue/drill/DynaMIT/sensor.dat
+demand		= /home/dynamit/student/mengyue/drill/DynaMIT/demand.dat
+odFlowPath	= /home/dynamit/student/mengyue/drill/DynaMIT/temp/
+sensorDataPath	= /home/dynamit/student/mengyue/drill/DynaMIT/
+sen_path	= /home/dynamit/student/mengyue/drill/DynaMIT/output/
+
