@@ -19,7 +19,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/postgresql-9.3-1103.jdbc3.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/postgresql-9.4.1209.jre6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

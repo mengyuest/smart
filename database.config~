@@ -83,7 +83,6 @@ Column= "description"			Type = "varchar(10000)"
 //Historical network state and measurement
 Column= "demand_time"				Type = "jsonb"
 Column= "demand_flow"				Type = "jsonb"
-Column= "sensor_time"				Type = "jsonb"
 Column= "sensor_flow"				Type = "jsonb"
 
 //Output datas
