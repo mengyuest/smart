@@ -7,10 +7,11 @@ package util;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Paths;
 
 //TODO: write driver config to the file
 public class DatabaseDriver {
-    static  Boolean RUN_AT_LOCALHOST = true;
+    static  Boolean RUN_LOCAL = true;
 
     static  String JDBC_DRIVER = "org.postgresql.Driver";
     static  String DB_LOCAL = "jdbc:postgresql://localhost:5432/dyna";
@@ -45,7 +46,7 @@ public class DatabaseDriver {
 
             //STEP 3: Open a connection
             System.out.println("Connecting to database...");
-            if(RUN_AT_LOCALHOST){
+            if(RUN_LOCAL){
                 conn = DriverManager.getConnection(DB_LOCAL, USER_LOCAL, PASS_LOCAL);
             }
             else{
@@ -218,11 +219,19 @@ public class DatabaseDriver {
         }
     }
 
+    //TODO: Update the file paths and other parameters from file
+    public void UpdatePathFromFile(){
+
+    }
 
 
     public static void main(String[] args) {
         ResultSet rs = null;
         DatabaseDriver dbd = new DatabaseDriver();
+
+
+        Tool.println(Paths.get(".").toAbsolutePath().normalize().toString());
+        dbd.UpdatePathFromFile();
 
         dbd.connect();
         dbd.sqlExecute("CREATE TABLE newOne()",true);

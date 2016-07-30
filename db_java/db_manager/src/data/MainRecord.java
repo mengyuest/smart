@@ -39,10 +39,12 @@ public class MainRecord{
     public String description;
 
     //Historical network state and measurement
-    public HashMap<Integer, LinkedList<int[]>> sensorFlowTimeMap;
+    public HashMap<Integer, int[]> sensorFlowTimeMap;
     public String gsonOfSensorFlow;
-    public HashMap<Integer, int[]> demandTagTimeMap;
-    public HashMap<Integer, LinkedList<double[]>> demandFlowTimeMap;
+    public double histODScaleFactor;
+    public String histODFlowCsvString;
+    public double mitsimODScaleFactor;
+    public String mitsimODFlowCsvString;
     public String gsonOfDemandFlow;
 
 

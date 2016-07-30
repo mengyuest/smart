@@ -1,0 +1,19 @@
+// Configuraion for file path
+// MENG YUE
+// Created at July,30,2016
+//
+// Standard format:
+//
+// Warning: please strictly follow the format. No more syntax adding other than whitespace. Or it may crash!
+
+dynaMIT		= /home/dynamit/student/mengyue/drill/database.config
+RUN_LOCAL	= true
+JDBC_DRIVER	= "org.postgresql.Driver"
+DB_LOCAL	= "jdbc:postgresql://localhost:5432/dyna"
+USER_LOCAL	= "dynamit"
+PASS_LOCAL	= "dynamitFM@09"
+DB_SERVER	= "jdbc:postgresql://137.132.22.82:15063/dynamit-ms"
+USER_SERVER = "dynamitms"
+PASS_SERVER = "supernetwork"
+
+

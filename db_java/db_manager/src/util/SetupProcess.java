@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class SetupProcess {
-    public static String ConfigPath= "/home/dynamit/student/mengyue/drill/database.config";
+    public static String ConfigPath= "/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
     public static DatabaseDriver DBD = new DatabaseDriver();
     public static Boolean shallPrintCommand = true;
 
@@ -65,20 +65,20 @@ public class SetupProcess {
         return true;
     }
 
-    // Show (part of) the table
-    public void show_database(){
+    //TODO: Update the file paths and other parameters from file
+    public void UpdatePathFromFile(){
 
     }
-
 
     public static void main(String[] args) {
         SetupProcess dbs = new SetupProcess();
 
+        DBD.UpdatePathFromFile();
+        dbs.UpdatePathFromFile();
+
         DBD.connect();
 
         dbs.setup_database();
-
-        dbs.show_database();
 
         DBD.disconnect();
     }

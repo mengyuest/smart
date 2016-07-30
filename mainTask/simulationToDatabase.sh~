@@ -1,6 +1,6 @@
 
 
-CONFIGFILE=~/student/mengyue/drill/filepath.config
+CONFIGFILE=~/student/mengyue/drill/mainTask/filepath.config
 DYNAMITPATH=~/student/mengyue/drill/DynaMIT/
 DTAPARAMPATH=~/student/mengyue/drill/DynaMIT/
 GSONJAR=~/student/mengyue/drill/db_java/db_manager/lib/gson-2.5.jar
