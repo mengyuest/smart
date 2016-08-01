@@ -3,3 +3,9 @@ dynamit-ms-db/
 DynaMIT/
 graph/
 dem.csv2demand.dat_converter/
+test/demand_csv
+test/demand_dat
+test/demand*
+test/DynaMIT*
+test/MITSIM
+

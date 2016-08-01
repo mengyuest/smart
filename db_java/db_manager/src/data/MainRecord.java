@@ -42,9 +42,9 @@ public class MainRecord{
     public HashMap<Integer, int[]> sensorFlowTimeMap;
     public String gsonOfSensorFlow;
     public double histODScaleFactor;
-    public String histODFlowCsvString;
+    public String[] histODFlowMyCsvArray;
     public double mitsimODScaleFactor;
-    public String mitsimODFlowCsvString;
+    public String[] mitsimODFlowMyCsvArray;
     public String gsonOfDemandFlow;
 
 

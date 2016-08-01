@@ -19,19 +19,21 @@ public class InsertProcess {
     public static DatabaseDriver DBD = new DatabaseDriver();
     public Boolean shallPrintSQL = false;
 
-    private static String dtaparamPath = "/home/dynamit/student/mengyue/drill/DynaMIT/dtaparam.dat";
-    private static String networkPath = "/home/dynamit/student/mengyue/drill/DynaMIT/july_demo_network_v11.dat";
-    private static String behaviorPath = "/home/dynamit/student/mengyue/drill/DynaMIT/BehavioralParameters.dat";
-    private static String supplyparamPath = "/home/dynamit/student/mengyue/drill/DynaMIT/supplyparam.dat";
-    private static String sensorPath="/home/dynamit/student/mengyue/drill/DynaMIT/sensor.dat";
-    private static String histODCsvPath = "/home/dynamit/student/mengyue/drill/DynaMIT/demand_DynaMIT_july_demo_5min_Final7.csv";
-    private static String mitsimODCsvPath = "/home/dynamit/student/mengyue/drill/DynaMIT/demand_DynaMIT_july_demo_5min_Final8.csv";
-    private static String histODPath = "/home/dynamit/student/mengyue/drill/DynaMIT/demand_DynaMIT_july_demo_5min_Final7.dat";
-    private static String mitsimODPath = "/home/dynamit/student/mengyue/drill/DynaMIT/demand_DynaMIT_july_demo_5min_Final8.dat";
-    private static String configPath="/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
-    private static String odFlowPath="/home/dynamit/student/mengyue/drill/DynaMIT/temp/";
-    private static String sensorDataPath="/home/dynamit/student/mengyue/drill/DynaMIT/";
-    private static String sen_path="/home/dynamit/student/mengyue/drill/DynaMIT/output/";
+    private static String configPath        =   "/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
+    private static String DYNAMITPATH       =   "/home/dynamit/student/mengyue/drill/test/DynaMIT/";
+    private static String MITSIMPATH        =   "/home/dynamit/student/mengyue/drill/test/MITSIM/";
+    private static String dtaparamPath      =   DYNAMITPATH + "dtaparam.dat";
+    private static String networkPath       =   DYNAMITPATH + "aug_network_v7_Hz.dat";//"july_demo_network_v11.dat";
+    private static String behaviorPath      =   DYNAMITPATH + "BehavioralParameters.dat";
+    private static String supplyparamPath   =   DYNAMITPATH + "supplyparam.dat";
+    private static String sensorPath        =   MITSIMPATH  + "Output/sensor.out";
+    private static String histODCsvPath     =   DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.csv";//"demand_DynaMIT.csv";
+    private static String mitsimODCsvPath   =   MITSIMPATH + "demand_MITSIM.csv";
+    private static String histODPath        =   DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.dat";//"demand_DynaMIT.dat";
+    private static String mitsimODPath      =   MITSIMPATH + "demand_MITSIM.dat";
+    private static String odFlowPath        =   DYNAMITPATH + "temp/";
+    private static String sensorDataPath    =   DYNAMITPATH;
+    private static String sen_path          =   DYNAMITPATH + "output/";
 
     private List<Integer> id_list = new LinkedList<Integer>();
     private int intervalNum;
@@ -489,7 +491,7 @@ public class InsertProcess {
     }
 
 
-    public String demand_loader_get_csvString(String histOrMitisimCsvFlowPath){
+    public String[] demand_loader_get_csvString(String histOrMitisimCsvFlowPath){
         try{
             FileInputStream f = new FileInputStream(histOrMitisimCsvFlowPath);
             BufferedReader b = new BufferedReader(new InputStreamReader(f));
@@ -507,9 +509,7 @@ public class InsertProcess {
             for(int i=0;i<n;i++){
                 strArray[i] = b.readLine();
             }
-            csvString = Arrays.toString(strArray);
-            //csvString = csvString.replace(",,",",");
-            return csvString;
+            return strArray;
         }catch (FileNotFoundException fnfe){
             fnfe.printStackTrace();
             return null;
@@ -517,6 +517,90 @@ public class InsertProcess {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public HashMap<Integer,HashMap<String,Double>> demandCsvStr2mapmap(String[] csvStrArray){
+        int count = csvStrArray.length;
+        HashMap<Integer, HashMap<String,Double>> map = new HashMap<>();
+        String[] strList = csvStrArray[0].trim().split(",");
+        int startIndex = 1;
+        if(!strList[0].contains("origin")){
+            startIndex = 0;
+        }
+
+        for (int i=startIndex;i<count;i++){
+            strList = csvStrArray[i].trim().split(",");
+            String od_pair = strList[0]+" "+strList[1];
+            Integer timeStamp = Integer.parseInt(strList[2]);
+            if(map.containsKey(timeStamp)){
+                map.get(timeStamp).put(od_pair,Double.parseDouble(strList[3]));
+            }
+            else{
+                HashMap<String, Double> mapmap = new HashMap<>();
+                map.put(timeStamp,mapmap);
+                mapmap.put(od_pair,Double.parseDouble(strList[3]));
+            }
+        }
+        return map;
+    }
+
+    public String mapmap2myCsvStr(HashMap<Integer,HashMap<String,Double>> map, double factor){
+        Object[] timeKey = map.keySet().toArray();
+        Object[] odKey = map.get(timeKey[0]).keySet().toArray();
+        int timeCount = timeKey.length;
+        int odCount = odKey.length;
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%f",factor));
+        for(int i=1;i<odCount+1;i++){
+            sb.append(",");
+            sb.append(odKey[i-1]);
+        }
+        sb.append("\n");
+
+        for(int i=1;i<timeCount;i++){
+            sb.append(String.format("%d",(Integer)timeKey[i]));
+            for(int j=0;j<odCount;j++){
+                sb.append(String.format(",%f",map.get(timeKey[i]).get(odKey[j])));
+            }
+            sb.append("\n");
+        }
+
+        return sb.substring(0);
+    }
+
+    public Double getFactorFromMyCsvStr(String myCsvStr){
+        String factorPart =  myCsvStr.substring(0,50).split(",")[0];
+        return Double.parseDouble(factorPart);
+    }
+
+    public HashMap<Integer,Map<String, Double>> myCsvStr2mapmap(String myCsvStr){
+        HashMap<Integer,Map<String,Double>> map = new HashMap<>();
+        String[] allStr = myCsvStr.split("\n");
+        String odPairKeyStr = allStr[0];
+        String[] odPairKey = odPairKeyStr.split(",");
+        int lineSum = allStr.length;
+        for (int i=1;i<lineSum;i++){
+            HashMap<String, Double> mapmap = new HashMap<>();
+
+            String[] odPairValueList = allStr[i].split(",");
+            map.put(Integer.parseInt(odPairValueList[0]),mapmap);
+            for(int j=1;j<odPairValueList.length+1;j++){
+                mapmap.put(odPairKey[j],Double.parseDouble(odPairValueList[j]));
+            }
+        }
+        return map;
+    }
+
+    public void mapmap2DemandDat(){
+
+    }
+
+    public void estimateODDatStr2mapmap(){
+
+    }
+
+    public void mapmap2EstimateDat(){
+
     }
 
     /*public String[] demand_loader(){
@@ -670,10 +754,15 @@ public class InsertProcess {
 
         String currentIntervalTimeStr = simuStartTimeStr;
 
-        String histODCsvStr = demand_loader_get_csvString(histODCsvPath);
-        String mitsimODCsvStr = demand_loader_get_csvString(mitsimODCsvPath);
+        String[] histODCsvStrArray = demand_loader_get_csvString(histODCsvPath);
+        String[] mitsimODCsvStrArray = demand_loader_get_csvString(mitsimODCsvPath);
         mainRecord.histODScaleFactor = readDemandScaleFactor(histODPath);
         mainRecord.mitsimODScaleFactor = readDemandScaleFactor(histODPath);
+        String histODMyCsvStr = mapmap2myCsvStr(demandCsvStr2mapmap(histODCsvStrArray),mainRecord.histODScaleFactor);
+        String mitsimODMyCsvStr = mapmap2myCsvStr(demandCsvStr2mapmap(mitsimODCsvStrArray),mainRecord.mitsimODScaleFactor);
+        //String histODMyCsvStr = Arrays.toString(histODMyCsvStrArray);
+        //String mitsimODMyCsvStr = Arrays.toString(mitsimODMyCsvStrArray);
+
         String sensorStr = sensor_loader();
 
         HashMap<Integer, int[]> odFlowArrayTimeMap = new HashMap<>();
@@ -710,8 +799,8 @@ public class InsertProcess {
         mainRecord.simulationStopTime = simuStopTimeStr;
         mainRecord.intervalNum = intervalNum;
 
-        mainRecord.histODFlowCsvString = histODCsvStr;
-        mainRecord.mitsimODFlowCsvString = mitsimODCsvStr;
+        //mainRecord.histODFlowMyCsvArray = histODMyCsvStrArray;
+        //mainRecord.mitsimODFlowMyCsvArray = mitsimODMyCsvStrArray;
         mainRecord.odFlowArrayTimeMap = odFlowArrayTimeMap;
         mainRecord.sensorDataArrayTimeMap = sensorDataArrayTimeMap;
         mainRecord.sen_Flw_TimeMap = sen_flw_dict;
@@ -728,7 +817,7 @@ public class InsertProcess {
         String sen_flw_str = gson.toJson(sen_flw_dict);
         String sen_spd_str = gson.toJson(sen_spd_dict);
         String precisionStr = gson.toJson(precision);
-        Tool.println(String.format("%d, %d, %d, %d, %d, %d",histODCsvStr.length(),mitsimODCsvStr.length(),
+        Tool.println(String.format("%d, %d, %d, %d, %d, %d",histODMyCsvStr.length(),mitsimODMyCsvStr.length(),
                 sensorStr.length(),odFlowListStr.length(),sensorStr.length(),sen_flw_str.length(),sen_spd_str.length()));
         String command=String.format("INSERT INTO main("+
                         "dtaparamId, networkId, behaviorId, supplyparamId,"+
@@ -741,7 +830,7 @@ public class InsertProcess {
                 id_list.get(0),id_list.get(1),id_list.get(2),id_list.get(3),
                 dateStr,timeStr,dateStr,
                 simuStartTimeStr,simuStopTimeStr,intervalNum,
-                histODCsvStr,mainRecord.histODScaleFactor,mitsimODCsvStr, mainRecord.mitsimODScaleFactor, sensorStr
+                histODMyCsvStr,mainRecord.histODScaleFactor,mitsimODMyCsvStr, mainRecord.mitsimODScaleFactor, sensorStr
                 ,odFlowListStr,sensorDataListStr,
                 sen_flw_str,sen_spd_str,precisionStr);
 
@@ -1071,19 +1160,19 @@ public class InsertProcess {
             return false;
         }
 
-        if(!Tool.testStringSame(queryResult("main","histOD_flow"),mainRecord.histODFlowCsvString)){
+        //if(!Tool.testStringSame(queryResult("main","histOD_flow"),mainRecord.histODFlowCsvString)){
+        //    return false;
+        //}
+
+        if(Double.parseDouble(queryResult("main","histOD_scale"))!=mainRecord.histODScaleFactor){
             return false;
         }
 
-        if(Double.parseDouble(queryResult("main","histOD_flow"))!=mainRecord.histODScaleFactor){
-            return false;
-        }
+        //if(!Tool.testStringSame(queryResult("main","mitsimOD_flow"),mainRecord.mitsimODFlowCsvString)){
+        //    return false;
+        //}
 
-        if(!Tool.testStringSame(queryResult("main","mitsimOD_flow"),mainRecord.mitsimODFlowCsvString)){
-            return false;
-        }
-
-        if(Double.parseDouble(queryResult("main","mitsimOD_flow"))!=mainRecord.mitsimODScaleFactor){
+        if(Double.parseDouble(queryResult("main","mitsimOD_scale"))!=mainRecord.mitsimODScaleFactor){
             return false;
         }
 

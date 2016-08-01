@@ -24,14 +24,16 @@ PASS_SERVER = "supernetwork"
 
 
 [FILE]
-config		= /home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config
-dtaparam	= /home/dynamit/student/mengyue/drill/DynaMIT/dtaparam.dat 
-network		= /home/dynamit/student/mengyue/drill/DynaMIT/july_demo_network_disabled.dat	
-behavior	= /home/dynamit/student/mengyue/drill/DynaMIT/BehavioralParameters.dat
-supplyparam	= /home/dynamit/student/mengyue/drill/DynaMIT/supplyparam.dat
-sensor		= /home/dynamit/student/mengyue/drill/DynaMIT/sensor.dat
-demand		= /home/dynamit/student/mengyue/drill/DynaMIT/demand_DynaMIT_july_demo_5min_Final8.dat
-odFlowPath	= /home/dynamit/student/mengyue/drill/DynaMIT/temp/
-sensorDataPath	= /home/dynamit/student/mengyue/drill/DynaMIT/
-sen_path	= /home/dynamit/student/mengyue/drill/DynaMIT/output/
-
+config			= /home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config
+dtaparam		= /home/dynamit/student/mengyue/drill/test/DynaMIT/dtaparam.dat 
+network			= /home/dynamit/student/mengyue/drill/test/DynaMIT/july_demo_network_v11.dat	
+behavior		= /home/dynamit/student/mengyue/drill/test/DynaMIT/BehavioralParameters.dat
+supplyparam		= /home/dynamit/student/mengyue/drill/test/DynaMIT/supplyparam.dat
+sensor			= /home/dynamit/student/mengyue/drill/test/MITSIM/Output/sensor.out
+histODCsvPath	= /home/dynamit/student/mengyue/drill/test/DynaMIT/demand_DynaMIT.csv
+histODPath		= /home/dynamit/student/mengyue/drill/test/DynaMIT/demand_DynaMIT.dat
+mitsimODCsvPath	= /home/dynamit/student/mengyue/drill/test/MITSIM/demand_MITSIM.csv
+mitsimODPath	= /home/dynamit/student/mengyue/drill/test/MITSIM/demand_MITSIM.dat
+odFlowPath		= /home/dynamit/student/mengyue/drill/test/DynaMIT/temp/
+sensorDataPath	= /home/dynamit/student/mengyue/drill/test/DynaMIT/
+sen_path		= /home/dynamit/student/mengyue/drill/test/DynaMIT/output/

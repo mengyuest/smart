@@ -83,8 +83,10 @@ Column= "specialEvent"			Type = "varchar(10000)"
 Column= "description"			Type = "varchar(10000)"
 
 //Historical network state and measurement
-Column= "demand_scale"				Type = "real"
-Column= "demand_flow"				Type = "TEXT"
+Column= "histOD_flow"				Type = "TEXT"
+Column= "histOD_scale"				Type = "real"
+Column= "mitsimOD_flow"				Type = "TEXT"
+Column= "mitsimOD_scale"				Type = "real"
 Column= "sensor_flow"				Type = "json"
 
 //Output datas
