@@ -13,27 +13,28 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.*;
 
+import javax.xml.crypto.Data;
 import java.text.*;
 public class InsertProcess {
 
     public static DatabaseDriver DBD = new DatabaseDriver();
     public Boolean shallPrintSQL = false;
 
-    private static String configPath        =   "/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
-    private static String DYNAMITPATH       =   "/home/dynamit/student/mengyue/drill/test/DynaMIT/";
-    private static String MITSIMPATH        =   "/home/dynamit/student/mengyue/drill/test/MITSIM/";
-    private static String dtaparamPath      =   DYNAMITPATH + "dtaparam.dat";
-    private static String networkPath       =   DYNAMITPATH + "aug_network_v7_Hz.dat";//"july_demo_network_v11.dat";
-    private static String behaviorPath      =   DYNAMITPATH + "BehavioralParameters.dat";
-    private static String supplyparamPath   =   DYNAMITPATH + "supplyparam.dat";
-    private static String sensorPath        =   MITSIMPATH  + "Output/sensor.out";
-    private static String histODCsvPath     =   DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.csv";//"demand_DynaMIT.csv";
-    private static String mitsimODCsvPath   =   MITSIMPATH + "demand_MITSIM.csv";
-    private static String histODPath        =   DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.dat";//"demand_DynaMIT.dat";
-    private static String mitsimODPath      =   MITSIMPATH + "demand_MITSIM.dat";
-    private static String odFlowPath        =   DYNAMITPATH + "temp/";
-    private static String sensorDataPath    =   DYNAMITPATH;
-    private static String sen_path          =   DYNAMITPATH + "output/";
+    private static String configPath        =   "";//"/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
+    private static String DYNAMITPATH       =   "";//"/home/dynamit/student/mengyue/drill/test/DynaMIT/";
+    private static String MITSIMPATH        =   "";//"/home/dynamit/student/mengyue/drill/test/MITSIM/";
+    private static String dtaparamPath      =   "";//DYNAMITPATH + "dtaparam.dat";
+    private static String networkPath       =   "";//DYNAMITPATH + "aug_network_v7_Hz.dat";//"july_demo_network_v11.dat";
+    private static String behaviorPath      =   "";//DYNAMITPATH + "BehavioralParameters.dat";
+    private static String supplyparamPath   =   "";//DYNAMITPATH + "supplyparam.dat";
+    private static String sensorPath        =   "";//MITSIMPATH  + "Output/sensor.out";
+    private static String histODCsvPath     =   "";//DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.csv";//"demand_DynaMIT.csv";
+    private static String mitsimODCsvPath   =   "";//MITSIMPATH + "demand_MITSIM.csv";
+    private static String histODPath        =   "";//DYNAMITPATH + "demand_DynaMIT_hist_nZero_pert_Gaussian_BN5.dat";//"demand_DynaMIT.dat";
+    private static String mitsimODPath      =   "";//MITSIMPATH + "demand_MITSIM.dat";
+    private static String odFlowPath        =   "";//DYNAMITPATH + "temp/";
+    private static String sensorDataPath    =   "";//DYNAMITPATH;
+    private static String sen_path          =   "";//DYNAMITPATH + "output/";
 
     private List<Integer> id_list = new LinkedList<Integer>();
     private int intervalNum;
@@ -49,80 +50,6 @@ public class InsertProcess {
     private SupplyData supplyData;
     private MainRecord mainRecord;
 
-
-
-
-    public static void LoadFilePath(String filePathPath){
-        if(filePathPath==null || filePathPath.length()==0){
-            return;
-        }
-        else{
-            try{
-                FileInputStream f= new FileInputStream(filePathPath);
-                BufferedReader b= new BufferedReader(new InputStreamReader(f));
-                String str;
-                while((str=b.readLine())!=null){
-                    String realLine = Tool.unComment(str);
-                    if(realLine.length()>0&&realLine.contains("=")){
-                        String[] seg = realLine.split("=");
-                        seg[0] = seg[0].trim();
-                        seg[1] = seg[1].trim();
-
-                        switch (seg[0]){
-                            case "config":
-                                configPath = seg[1];
-                                break;
-                            case "dtaparam":
-                                dtaparamPath = seg[1];
-                                break;
-                            case "network":
-                                networkPath = seg[1];
-                                break;
-                            case "behavior":
-                                behaviorPath = seg[1];
-                                break;
-                            case "supplyparam":
-                                supplyparamPath = seg[1];
-                                break;
-                            case "sensor":
-                                sensorPath = seg[1];
-                                break;
-                            case "histODCsvPath":
-                                histODCsvPath = seg[1];
-                                break;
-                            case "mitsimODCsvPath":
-                                mitsimODCsvPath = seg[1];
-                                break;
-                            case "histODPath":
-                                histODPath = seg[1];
-                                break;
-                            case "mitsimODPath":
-                                mitsimODPath = seg[1];
-                                break;
-                            case "odFlowPath":
-                                odFlowPath = seg[1];
-                                break;
-                            case "sensorDataPath":
-                                sensorDataPath =seg[1];
-                                break;
-                            case "sen_path":
-                                sen_path =seg[1];
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }catch (FileNotFoundException fnfe){
-                fnfe.printStackTrace();
-                return;
-            }catch (Exception e){
-                e.printStackTrace();
-                return;
-            }
-
-        }
-    }
 
     public int dtaparam_loader(){
         boolean isSearched = false;
@@ -591,16 +518,73 @@ public class InsertProcess {
         return map;
     }
 
-    public void mapmap2DemandDat(){
+    public void mapmap2DemandDat(double factor, HashMap<Integer,Map<String, Double>> map, String outputPath){
+        try{
+            File thisFile = new File(outputPath);
+            if(!thisFile.exists()) {
+                thisFile.createNewFile();
+            }
+            FileOutputStream f = new FileOutputStream(thisFile);
+            BufferedWriter b = new BufferedWriter(new OutputStreamWriter(f));
+            String csvString="";
+            String line;
+            int n=0;
 
+            Object[] timeKeys = map.keySet().toArray();
+            Object[] odKeys = map.get(timeKeys[0]).keySet().toArray();
+            int timeKeyCount = timeKeys.length;
+            int odKeyCount = odKeys.length;
+            for(int i=0;i<timeKeyCount;i++){
+                b.write(String.format("%d\t0\t%d\n",timeKeys[i],(int)factor));
+                b.write("{\n");
+                for (int j=0;j<odKeyCount;j++){
+                    String[] od_name = ((String)odKeys[j]).split(" ");
+                    b.write(String.format("{%s\t%s\t%d}\n",od_name[0],od_name
+                            [1],map.get(timeKeys[i]).get(odKeys[j]).intValue()));
+                }
+                b.write("}\n");
+            }
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public void estimateODDatStr2mapmap(){
-
+    //TODO estimatedOD string from database turn to file estimatedOD
+    public HashMap<Integer,HashMap<String, Double>> estimateODDatStr2mapmap(){
+        return null;
     }
 
-    public void mapmap2EstimateDat(){
+    public void mapmap2EstimateDat(HashMap<Integer,Map<String, Double>> map, String outputDir){
+        try{
+            File thisDir = new File(outputDir);
+            if(!thisDir.exists()) {
+                thisDir.mkdir();
+            }
+            FileOutputStream f;
+            BufferedWriter b;
 
+
+            Object[] timeKeys = map.keySet().toArray();
+            Object[] odKeys = map.get(timeKeys[0]).keySet().toArray();
+            int timeKeyCount = timeKeys.length;
+            int odKeyCount = odKeys.length;
+            for(int i=0;i<timeKeyCount;i++){
+                String timestamp = "["+MYtime.generateDate((Integer)timeKeys[i],":")+","+MYtime.generateDate((Integer)timeKeys[i]+300,":")+"]";
+                f = new FileOutputStream(String.format("%sestimatedOD%s.dat",outputDir,timestamp));
+                b = new BufferedWriter(new OutputStreamWriter(f));
+                for (int j=0;j<odKeyCount;j++){
+                    b.write(map.get(timeKeys[i]).get(odKeys[j]).intValue());
+                    b.write("}\n");
+                }
+
+            }
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /*public String[] demand_loader(){
@@ -1266,23 +1250,153 @@ public class InsertProcess {
         Object o = gson.fromJson(jsonStr, classOfT);
         return o;
     }
-    //TODO: Update the file paths and other parameters from file
-    public void UpdatePathFromFile(){
 
+    //TODO: Update the file paths and other parameters from file
+    public void UpdatePathFromFile(String path){
+        try {
+            FileInputStream f = new FileInputStream(path);
+            BufferedReader b = new BufferedReader(new InputStreamReader(f));
+
+            String line = "";
+            while((line = b.readLine())!=null){
+                String realLine = Tool.unComment(line).trim();
+                String[] segList = realLine.split("=");
+                switch (segList[0].trim()){
+                    case "RUN_LOCAL":
+                        DatabaseDriver.RUN_LOCAL = (segList[1].toLowerCase().contains("true"));
+                        break;
+                    case "JDBC_DRIVER":
+                        DatabaseDriver.JDBC_DRIVER = Tool.unquote(segList[1]);
+                        break;
+                    case "DB_LOCAL":
+                        DatabaseDriver.DB_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "USER_LOCAL":
+                        DatabaseDriver.USER_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "PASS_LOCAL":
+                        DatabaseDriver.PASS_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "DB_SERVER":
+                        DatabaseDriver.DB_SERVER = Tool.unquote(segList[1]);
+                        break;
+                    case "USER_SERVER":
+                        DatabaseDriver.USER_SERVER = Tool.unquote(segList[1]);
+                        break;
+                    case "PASS_SERVER":
+                        DatabaseDriver.PASS_SERVER = Tool.unquote(segList[1]);
+                        break;
+                    case "config":
+                        configPath = Tool.unquote(segList[1]);
+                        break;
+                    case "DynaMIT":
+                        DYNAMITPATH = Tool.unquote(segList[1]);
+                        break;
+                    case "MITSIM":
+                        MITSIMPATH = Tool.unquote(segList[1]);
+                        break;
+                }
+            }
+
+            dtaparamPath = DYNAMITPATH+"dtaparam.dat";
+            f = new FileInputStream(dtaparamPath);
+            b = new BufferedReader(new InputStreamReader(f));
+
+            while((line=b.readLine())!=null){
+                String realLine = Tool.unComment(line).trim();
+                String[] segList = realLine.split("=");
+                if(segList.length==2) {
+                    String str = Tool.unquote(segList[1]);
+                    switch (segList[0].trim()) {
+                        case "InputDirectory":
+
+                            if (str.length()==1&&str.charAt(0) == '.') {
+                                sensorDataPath = DYNAMITPATH;
+                            } else {
+                                if(str.charAt(str.length()-1)!='/') {
+                                    str = str+'/';
+                                }
+                                sensorDataPath = DYNAMITPATH+str.substring(2);
+                            }
+                            break;
+                        case "OutputDirectory":
+                            if (str.length()==1&&str.charAt(0) == '.') {
+                                sen_path = DYNAMITPATH;
+                            } else {
+                                if(str.charAt(str.length()-1)!='/') {
+                                    str = str+'/';
+                                }
+                                sen_path = DYNAMITPATH+str.substring(2);
+                            }
+                            break;
+                        case "TmpDirectory":
+                            if (str.length()==1&&str.charAt(0) == '.') {
+                                odFlowPath = DYNAMITPATH;
+                            } else {
+                                if(str.charAt(str.length()-1)!='/') {
+                                    str = str+'/';
+                                }
+                                odFlowPath = DYNAMITPATH+str.substring(2);
+                            }
+                            break;
+                        case "NetworkFile":
+                            networkPath = DYNAMITPATH + Tool.unquote(segList[1]);
+                            break;
+                        case "SupplyParamFile":
+                            supplyparamPath = DYNAMITPATH + Tool.unquote(segList[1]);
+                            break;
+                        case "BehParamFile":
+                            behaviorPath = DYNAMITPATH + Tool.unquote(segList[1]);
+                            break;
+                        case "MitsimSensorsFile":
+                            sensorPath = DYNAMITPATH + Tool.unquote(segList[1]);
+                            break;
+                        case "HistODFile":
+                            int count = str.length();
+                            histODPath = DYNAMITPATH + str;
+                            histODCsvPath = DYNAMITPATH + str.substring(0, count - 3) + "csv";
+                    }
+                }
+            }
+
+            f = new FileInputStream(MITSIMPATH + "master.mitsim");
+            b = new BufferedReader(new InputStreamReader(f));
+            while((line=b.readLine())!=null){
+                String realLine = Tool.unComment(line).trim();
+                String[] segList = realLine.split("=");
+                if(segList.length==2) {
+                    String str = Tool.unquote(segList[1]);
+                    switch (segList[0].trim()) {
+                        case "[Trip Table File]":
+                            mitsimODPath = MITSIMPATH + str;
+                            mitsimODCsvPath = MITSIMPATH + str.substring(0, str.length() - 3) + "csv";
+                            break;
+                    }
+                }
+            }
+
+
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args){
+        String path="config/param.config";
+        if(args!=null && args.length>0){
+            path = args[0];
+        }
         InsertProcess dbi = new InsertProcess();
 
-        dbi.UpdatePathFromFile();
+        dbi.UpdatePathFromFile(path);
+
         DBD.UpdatePathFromFile();
 
         DBD.connect();
 
         Tool.println("Load data path and database configuraion");
-        if(args!=null && args.length>0){
-            LoadFilePath(args[0]);
-        }
 
         dbi.InitRecordInstance();
 

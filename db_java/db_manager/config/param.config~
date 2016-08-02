@@ -11,8 +11,7 @@
 // Warning: please strictly follow the format. No more syntax adding other than whitespace. Or it may crash!
 
 [INIT]
-dynaMIT		= /home/dynamit/student/mengyue/DynaMIT
-RUN_LOCAL	= true
+RUN_LOCAL	= true //true or false
 JDBC_DRIVER	= "org.postgresql.Driver"
 DB_LOCAL	= "jdbc:postgresql://localhost:5432/dyna"
 USER_LOCAL	= "dynamit"
@@ -24,16 +23,6 @@ PASS_SERVER = "supernetwork"
 
 
 [FILE]
-config			= /home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config
-dtaparam		= /home/dynamit/student/mengyue/drill/test/DynaMIT/dtaparam.dat 
-network			= /home/dynamit/student/mengyue/drill/test/DynaMIT/july_demo_network_v11.dat	
-behavior		= /home/dynamit/student/mengyue/drill/test/DynaMIT/BehavioralParameters.dat
-supplyparam		= /home/dynamit/student/mengyue/drill/test/DynaMIT/supplyparam.dat
-sensor			= /home/dynamit/student/mengyue/drill/test/MITSIM/Output/sensor.out
-histODCsvPath	= /home/dynamit/student/mengyue/drill/test/DynaMIT/demand_DynaMIT.csv
-histODPath		= /home/dynamit/student/mengyue/drill/test/DynaMIT/demand_DynaMIT.dat
-mitsimODCsvPath	= /home/dynamit/student/mengyue/drill/test/MITSIM/demand_MITSIM.csv
-mitsimODPath	= /home/dynamit/student/mengyue/drill/test/MITSIM/demand_MITSIM.dat
-odFlowPath		= /home/dynamit/student/mengyue/drill/test/DynaMIT/temp/
-sensorDataPath	= /home/dynamit/student/mengyue/drill/test/DynaMIT/
-sen_path		= /home/dynamit/student/mengyue/drill/test/DynaMIT/output/
+config		= /home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config
+DynaMIT		= /home/dynamit/student/mengyue/drill/test/DynaMIT/
+MITSIM		= /home/dynamit/student/mengyue/drill/test/MITSIM/

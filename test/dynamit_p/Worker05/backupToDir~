@@ -1,0 +1,65 @@
+#!/bin/bash
+# version x.1 --Hz
+echo '=== mv output/temp files after run of DynaMIT in current directory to destimation ==='
+
+echo $1
+if $1
+then 
+    DEST='./BACKUP'
+    echo 'use default=' $DEST
+else
+    echo 'set DEST=' $1
+    DEST=$1
+    echo $DEST
+fi
+
+if [ -d $DEST ]
+then 
+    echo "$DEST exsited"
+else
+    mkdir $DEST
+fi
+
+
+mv Sim* $DEST
+mv *.lis $DEST
+mv *.out $DEST
+mv result.* $DEST
+mv debug* $DEST
+mv __e*.dat $DEST
+mv log* $DEST
+#mv warning* $DEST
+mv *.log $DEST
+mv *.debug $DEST
+mv DynaMIT.html $DEST
+
+#added by Hz 12/5/2014 to remove Pk-1 matrix created by oc code
+#mv Pk_1.mat $DEST
+mv EOD.txt $DEST
+rm algParams_*00.mat
+ 
+rm -r temp
+mkdir temp
+
+rm -r output
+mkdir output
+
+#find . -iname "*.[chy]*" -exec grep -H -n "$*" {} \;
+#
+#if [ -r ~/CorbaFreeDynaMIT/DynaMIT/DynaMIT ]
+#then
+#	echo "~/CorbaFreeDynaMIT/DynaMIT/DynaMIT exists "
+#    if [ -r ~/view/NewDynaMIT/Bin/DynaMIT ]
+#        then
+#        echo "~/view/NewDynaMIT/Bin/DynaMIT also exists, renamed to DynaMIT.old "
+#        echo "mv -f ~/view/NewDynaMIT/Bin/DynaMIT ~/view/NewDynaMIT/Bin/DynaMIT.old"
+#        mv -f ~/view/NewDynaMIT/Bin/DynaMIT ~/view/NewDynaMIT/Bin/DynaMIT.old
+#    else
+#        echo "~/view/NewDynaMIT/Bin/DynaMIT not exists, just copy "
+#    fi
+#    echo "cp ~/CorbaFreeDynaMIT/DynaMIT/DynaMIT ~/view/NewDynaMIT/Bin/"
+#    cp ~/CorbaFreeDynaMIT/DynaMIT/DynaMIT ~/view/NewDynaMIT/Bin/
+#fi
+
+
+echo 'Done.'

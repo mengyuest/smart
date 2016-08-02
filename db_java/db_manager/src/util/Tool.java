@@ -17,16 +17,48 @@ import java.util.LinkedList;
 public class Tool {
     public static String unComment(String str){
         if(str!=null && (str.contains("//") || str.contains("#"))){
-            int index = str.length();
-            int index1 = str.indexOf('/');
-            int index2 = str.indexOf('#');
-            if(index1 >= 0 && index1 < index-1){
-                index = index1+1;
+            int count = str.length();
+            int index = 0;
+            int countOfQuoteMark = 0;
+            while(index!=count){
+                switch (str.charAt(index)){
+                    case '\"':
+                        countOfQuoteMark++;
+                        break;
+                    case '/':
+                        if(index!=count-1&&str.charAt(index+1)=='/'){
+                            if(countOfQuoteMark%2==0)
+                            {
+                                str = str.substring(0,index);
+                                return str;
+                            }
+                        }
+                        break;
+                    case '#':
+                        if(countOfQuoteMark%2==0)
+                        {
+                            str = str.substring(0,index);
+                            return str;
+                        }
+                        break;
+                }
+                index++;
             }
-            if(index2 >= 0 && index2 < index-1){
-                index = index2+1;
-            }
-            str = str.substring(0,index);
+        }
+        return str;
+    }
+
+    public static String unquote(String str){
+        if(str==null){
+            return null;
+        }
+        str = str.trim();
+        if(str.charAt(0)=='\''||str.charAt(0)=='\"'){
+            str=str.substring(1);
+        }
+        int count = str.length();
+        if(str.charAt(count-1)=='\''||str.charAt(count-1)=='\"'){
+            str = str.substring(0,count-1);
         }
         return str;
     }

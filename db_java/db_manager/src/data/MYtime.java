@@ -11,7 +11,7 @@ public class MYtime {
     private int MINUTE;
     private int SECOND;
 
-    public void getDate(String timeStr){
+    public void getDate(String timeStr) {
         String[] seg = timeStr.split(":");
         HOUR = Integer.parseInt(seg[0]);
         MINUTE = Integer.parseInt(seg[1]);
@@ -23,11 +23,11 @@ public class MYtime {
         MONTH = month;
         DAY = day;
         HOUR = hour;
-        MINUTE= minute;
+        MINUTE = minute;
         SECOND = second;
     }
 
-    public void getDate(int hour, int minute, int second){
+    public void getDate(int hour, int minute, int second) {
         YEAR = 2016;
         MONTH = 7;
         DAY = 4;
@@ -36,34 +36,31 @@ public class MYtime {
         SECOND = second;
     }
 
-    public void addSec(int second){
+    public void addSec(int second) {
         int incToMinute = 0;
         int incToHour = 0;
         int incToDay = 0;
         int incToMonth = 0;
         int incToYear = 0;
 
-        SECOND = SECOND+second%60;
-        incToMinute = second/60;
-        if(SECOND>=60)
-        {
-            SECOND = SECOND%60;
+        SECOND = SECOND + second % 60;
+        incToMinute = second / 60;
+        if (SECOND >= 60) {
+            SECOND = SECOND % 60;
             incToMinute++;
         }
 
-        MINUTE = MINUTE + incToMinute%60;
-        incToHour = incToMinute/60;
-        if(MINUTE>=60)
-        {
-            MINUTE = MINUTE%60;
+        MINUTE = MINUTE + incToMinute % 60;
+        incToHour = incToMinute / 60;
+        if (MINUTE >= 60) {
+            MINUTE = MINUTE % 60;
             incToHour++;
         }
 
-        HOUR = HOUR + incToHour%24;
-        incToDay = incToHour/24;
-        if(HOUR>=24)
-        {
-            HOUR = HOUR%24;
+        HOUR = HOUR + incToHour % 24;
+        incToDay = incToHour / 24;
+        if (HOUR >= 24) {
+            HOUR = HOUR % 24;
             incToDay++;
         }
 
@@ -71,41 +68,51 @@ public class MYtime {
 
     }
 
-    public int getSECOND(){
+    public int getSECOND() {
         return SECOND;
     }
 
-    public int getMINUTE(){
+    public int getMINUTE() {
         return MINUTE;
     }
 
-    public int getHOUR(){
+    public int getHOUR() {
         return HOUR;
     }
 
-    public int getDAY(){
+    public int getDAY() {
         return DAY;
     }
 
-    public int getMONTH(){
+    public int getMONTH() {
         return MONTH;
     }
 
-    public int getYEAR(){
+    public int getYEAR() {
         return YEAR;
     }
 
-    public int getAbsoluteSecond(){
-        return HOUR*3600+MINUTE*60+SECOND;
+    public int getAbsoluteSecond() {
+        return HOUR * 3600 + MINUTE * 60 + SECOND;
     }
 
-    public static int getDeltaSec(MYtime t1, MYtime t2){
-        int len_t1=t1.getHOUR()*3600+t1.getMINUTE()*60+t1.getSECOND();
-        int len_t2=t2.getHOUR()*3600+t2.getMINUTE()*60+t2.getSECOND();
+    public static int getDeltaSec(MYtime t1, MYtime t2) {
+        int len_t1 = t1.getHOUR() * 3600 + t1.getMINUTE() * 60 + t1.getSECOND();
+        int len_t2 = t2.getHOUR() * 3600 + t2.getMINUTE() * 60 + t2.getSECOND();
 
-        return len_t1-len_t2;
+        return len_t1 - len_t2;
 
         //TODO: CALCULATE WITH DAY,MONTH and YEAR
+    }
+
+    public static String generateDate(int second, String splitStr){
+        int _SECOND = second%60;
+        int _MINUTE = second/60%60;
+        int _HOUR = second/3600%24;
+        return String.format("%s%s%s%s%s",
+                new DecimalFormat("00").format(_HOUR),splitStr,
+                new DecimalFormat("00").format(_MINUTE),splitStr,
+                new DecimalFormat("00").format(_SECOND));
     }
 
     @Override
