@@ -8,4 +8,10 @@ test/demand_dat
 test/demand*
 test/DynaMIT*
 test/MITSIM
-
+test/COPY
+test/DBSAVE
+test/dynamit_p
+test/_save
+test/backupfristTEN
+test/demand_csv
+test/demand_dat

@@ -11,7 +11,7 @@
 // Warning: please strictly follow the format. No more syntax adding other than whitespace. Or it may crash!
 
 [INIT]
-RUN_LOCAL	= true //true or false
+RUN_LOCAL	= true
 JDBC_DRIVER	= "org.postgresql.Driver"
 DB_LOCAL	= "jdbc:postgresql://localhost:5432/dyna"
 USER_LOCAL	= "dynamit"
@@ -26,3 +26,4 @@ PASS_SERVER = "supernetwork"
 config		= /home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config
 DynaMIT		= /home/dynamit/student/mengyue/drill/test/DynaMIT/
 MITSIM		= /home/dynamit/student/mengyue/drill/test/MITSIM/
+METADATA	= /home/dynamit/student/mengyue/drill/test/DynaMIT/metadata.dat

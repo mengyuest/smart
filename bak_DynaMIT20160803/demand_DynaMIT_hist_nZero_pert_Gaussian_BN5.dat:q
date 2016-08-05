@@ -1,0 +1,53 @@
+sudo
+sudo -k
+man sudo
+sudo -a 
+sudo -a dynamitFM@09
+man sudo
+sudo -A
+sudo -A dynamitFM@09
+cd $MENG
+cd drill/test/
+ls
+vim backUpResult.sh
+locate *network*
+reset
+sudo ./simulationToDatabase.sh
+./simulationToDatabase.sh
+. simulationToDatabase.sh
+sudo ./simulationToDatabase.sh
+. simulationToDatabase.sh
+sudo simulationToDatabase.sh
+sudo /simulationToDatabase.sh
+sudo .simulationToDatabase.sh
+sudo ./simulationToDatabase.sh
+./simulationToDatabase.sh
+sudo ./simulationToDatabase.sh
+gksudo ./simulationToDatabase.sh
+sudo apt-get install gksudo
+sudo apt-get install gksu
+gksudo ./simulationToDatabase.sh
+sudo ./simulationToDatabase.sh
+./simulationToDatabase.sh
+sudo ./simulationToDatabase.sh
+./simulationToDatabase.sh
+cd DynaMIT
+./ backupToDir
+.backupToDir.sh
+./backupToDir
+ls
+ll
+rm Sim1.inf 
+ls
+vim backupToDir
+./backupToDir
+cd BACKUP/
+ls
+ll
+ll Sim1.dat 
+cd ..
+ls
+./runDynaMIT.sh dtaparam.dat
+./backupToDir
+./runDynaMIT.sh dtaparam.dat
+matlab

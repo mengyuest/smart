@@ -1,11 +1,16 @@
 # Once in either Terminal
+rm A
+rm B
 mkfifo A B
 
 # In first Terminal
-( echo CommandA; sleep 3; echo done > A ) &
+( gnome-terminal -e "bash -c \" echo process A;read; exit;exec bash\"";echo done >A) &
 
 # In second Terminal
-( echo CommandB; sleep 8; echo done > B ) &
+( gnome-terminal -e "bash -c \" echo process B;read;exit;exec bash\""; echo done >B) &
 
 # In third Terminal
-read < A; read < B; echo Rest
+read < A; read <B; ls
+
+rm A
+rm B

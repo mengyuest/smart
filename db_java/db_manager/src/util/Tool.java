@@ -8,6 +8,7 @@ package util;
 import sun.awt.image.ImageWatched;
 
 import javax.sound.sampled.Line;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -364,6 +365,16 @@ public class Tool {
         return true;
     }
 
+    public static void IfNotExistThenCreateDir(String path){
+
+        if(path.contains(".")){
+            path = path.substring(0,path.lastIndexOf("/")+1);
+        }
+        File thisDir = new File(path);
+        if(!thisDir.exists()) {
+            thisDir.mkdir();
+        }
+    }
 
 
     public static void println(String a){

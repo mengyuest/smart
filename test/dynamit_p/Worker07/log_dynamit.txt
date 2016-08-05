@@ -98,7 +98,6 @@ Opening ./socioEco.dat
 
 Finished parsing Socio Economic database <./socioEco.dat>
 dtaSocioEcoData.cc:354 Warning, Bad OD checksum 2 in dtaSocioEcoData::generateTravelers()
-dtaSocioEcoData.cc:354 Warning, Bad OD checksum 2 in dtaSocioEcoData::generateTravelers()
 
 
 
@@ -116,7 +115,7 @@ dtaSupply.cc:1553 Info, Reading Surveillance
 # links = 1154
 # loaders = 267
 # nodes = 928
-# packets = 8270
+# packets = 5555
 # segments = 3896
 # sensors = 650
 

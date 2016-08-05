@@ -43,7 +43,7 @@ SupplyEpsilon   = 0.01
 
 PreSupplyCarlibration = 0
 EnableOnlineCalibration = 1
-CalibrationScriptName = "onlineCalib_original_noDB_also_write2EODuntrunc"  // Online calibration script name
+CalibrationScriptName = "onlineCalib_0bounds_CDeps1e_3guarantee"  // Online calibration script name
 CalibrationWarmupIntervals = 1	    // Num of intervals before online calibration kicks off
 CalibrationLookbackIntervals = 1    // Autogressive degree for online calibration
 

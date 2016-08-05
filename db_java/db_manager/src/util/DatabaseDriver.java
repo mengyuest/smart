@@ -4,6 +4,10 @@
 
 package util;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +15,8 @@ import java.nio.file.Paths;
 
 //TODO: write driver config to the file
 public class DatabaseDriver {
+    static String PATH = "/home/dynamit/student/mengyue/drill/db_java/db_manager/config/param.config";
     static  Boolean RUN_LOCAL = true;
-
     static  String JDBC_DRIVER = "org.postgresql.Driver";
     static  String DB_LOCAL = "jdbc:postgresql://localhost:5432/dyna";
     static String USER_LOCAL = "dynamit";
@@ -221,7 +225,46 @@ public class DatabaseDriver {
 
     //TODO: Update the file paths and other parameters from file
     public void UpdatePathFromFile(){
+        try {
+            FileInputStream f = new FileInputStream(PATH);
+            BufferedReader b = new BufferedReader(new InputStreamReader(f));
 
+            String line = "";
+            while ((line = b.readLine()) != null) {
+                String realLine = Tool.unComment(line).trim();
+                String[] segList = realLine.split("=");
+                switch (segList[0].trim()) {
+                    case "RUN_LOCAL":
+                        RUN_LOCAL = (segList[1].toLowerCase().contains("true"));
+                        break;
+                    case "JDBC_DRIVER":
+                        JDBC_DRIVER = Tool.unquote(segList[1]);
+                        break;
+                    case "DB_LOCAL":
+                       DB_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "USER_LOCAL":
+                        USER_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "PASS_LOCAL":
+                        PASS_LOCAL = Tool.unquote(segList[1]);
+                        break;
+                    case "DB_SERVER":
+                        DB_SERVER = Tool.unquote(segList[1]);
+                        break;
+                    case "USER_SERVER":
+                        USER_SERVER = Tool.unquote(segList[1]);
+                        break;
+                    case "PASS_SERVER":
+                        PASS_SERVER = Tool.unquote(segList[1]);
+                        break;
+                }
+            }
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

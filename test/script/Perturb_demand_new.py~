@@ -45,6 +45,7 @@ def READ_DEMAND_SAVE_PERT_CSV(infn, outfn):
     minOrigDem = 0.4
     tot_demand = 0
     maxDemandIn5Min = 150
+    print(infn + "  "+outfn)
     # read csv and save to perturbed demand file
     with open(infn,'rb') as infile:
         reader = csv.reader(infile)
@@ -91,7 +92,7 @@ if __name__ == "__main__":
 		os.makedirs(csvDir)
 	if not os.path.exists(datDir):
 		os.makedirs(datDir)
-	num_demand_files = 3
+	num_demand_files = 5
 	#print csv first
 	csvFilePattern = 'demand_MY_'
 	datFilePattern = 'demand_MY_'

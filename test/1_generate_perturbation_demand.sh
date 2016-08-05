@@ -1,27 +1,21 @@
 #!/bin/bash
-
-DATTOCSVSCRIPTFILE=~/student/mengyue/drill/test/script/demand_dat2csv_new.py
-PERTURBSCRIPTFILE=~/student/mengyue/drill/test/script/Perturb_demand_new.py
-PERTURBINPUTPATH=~/student/mengyue/drill/test/originDemand/
-PERTURBDEMANDDATPATH=~/student/mengyue/drill/test/demand_dat/
-PERTURBDEMANDCSVPATH=~/student/mengyue/drill/test/demand_csv/
-DYNAMITPATH=~/student/mengyue/drill/test/DynaMIT/
-MITSIMPATH=~/student/mengyue/drill/test/MITSIM/
-DTAPARAMPATH=~/student/mengyue/drill/test/DynaMIT/
+source init.sh
 
 # Read the MITSIM demand file name from master.mitsim
-DEMANDFILE=$(grep -F "[Trip Table File]" ${MITSIMPATH}master.mitsim)
-set -- "$DEMANDFILE" 
+Demand_File=$(grep -F "[Trip Table File]" ${MITSIM_Path}master.mitsim)
+set -- "$Demand_File" 
 IFS="="; declare -a Array=($*)  
-DEMANDFILE=$(echo ${Array[1]}|xargs)
-echo $DEMANDFILE
+Demand_File=$(echo ${Array[1]}|xargs)
+echo $Demand_File
 
-DEMANDCSVFILE=${DEMANDFILE::-3}csv
-echo $DEMANDCSVFILE
+Demand_Csv_File=${Demand_File::-3}csv
+echo $Demand_Csv_File
+
+python $Dat2Csv_Script_File ${Perturb_Input_Path}$Demand_File ${Perturb_Input_Path}$Demand_Csv_File
 
 # Generate a number of mitsim demand dat file
 echo -e
 echo -e
 echo -e "\e[36;1mgenerating pertubation demand \e[0m"
-python $PERTURBSCRIPTFILE ${PERTURBINPUTPATH}$DEMANDCSVFILE ${PERTURBDEMANDDATPATH} ${PERTURBDEMANDCSVPATH}
+python $Perturb_Script_File ${Perturb_Input_Path}$Demand_Csv_File ${Perturb_Demand_Csv_Path} ${Perturb_Demand_Dat_Path} $DAY_NUM
 

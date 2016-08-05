@@ -76,14 +76,14 @@ if __name__ == "__main__":
 
 	demandFactor = 10
 
-	if len(sys.argv) != 4:
-		print "Usage: python Perturb_demand_new.py input_csv_file output_dat_folder output_csv_folder"
+	if len(sys.argv) != 5:
+		print "Usage: python Perturb_demand_new.py input_csv_file output_dat_folder output_csv_folder file_Num"
 		exit()
 
 	infn = str(sys.argv[1])
 	csvFolder=str(sys.argv[2])
 	datFolder=str(sys.argv[3])
-
+	num_demand_files = int(sys.argv[4])
 	
 
 	csvDir = os.path.dirname(csvFolder)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 		os.makedirs(csvDir)
 	if not os.path.exists(datDir):
 		os.makedirs(datDir)
-	num_demand_files = 3
+	#num_demand_files = 5
 	#print csv first
 	csvFilePattern = 'demand_MY_'
 	datFilePattern = 'demand_MY_'

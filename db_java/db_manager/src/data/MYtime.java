@@ -115,6 +115,11 @@ public class MYtime {
                 new DecimalFormat("00").format(_SECOND));
     }
 
+    public static int generateSeconds(String timeStr, String splitStr){
+        String[] seg = timeStr.split(splitStr);
+        return Integer.parseInt(seg[0])*3600+Integer.parseInt(seg[1])*60+Integer.parseInt(seg[2]);
+    }
+
     @Override
     public String toString()
     {

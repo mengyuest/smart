@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.*;
 
-import javax.xml.crypto.Data;
 import java.text.*;
 public class InsertProcess {
 
@@ -23,6 +22,7 @@ public class InsertProcess {
     private static String configPath        =   "";//"/home/dynamit/student/mengyue/drill/db_java/db_manager/config/database.config";
     private static String DYNAMITPATH       =   "";//"/home/dynamit/student/mengyue/drill/test/DynaMIT/";
     private static String MITSIMPATH        =   "";//"/home/dynamit/student/mengyue/drill/test/MITSIM/";
+    private static String METADATAPATH      =   "";//"/home/dynamit/student/mengyue/drill/test/DynaMIT/metadata.dat"
     private static String dtaparamPath      =   "";//DYNAMITPATH + "dtaparam.dat";
     private static String networkPath       =   "";//DYNAMITPATH + "aug_network_v7_Hz.dat";//"july_demo_network_v11.dat";
     private static String behaviorPath      =   "";//DYNAMITPATH + "BehavioralParameters.dat";
@@ -446,6 +446,108 @@ public class InsertProcess {
         }
     }
 
+    public String[] getOdPairArrayFromDemandCsvStr(String[] csvStrArray){
+        ArrayList<String> odPairs = new ArrayList<>();
+        int count = csvStrArray.length;
+        int startIndex = 1;
+        if(!csvStrArray[0].contains("origin")){
+            startIndex = 0;
+        }
+        String firstTimeStamp = csvStrArray[startIndex].split(",")[2].trim();
+        for(int i=startIndex;i<count;i++){
+            if(!csvStrArray[i].split(",")[2].contains(firstTimeStamp)){
+                break;
+            }
+            else{
+                odPairs.add(csvStrArray[i].split(",")[0].trim()+" "+csvStrArray[i].split(",")[1].trim());
+            }
+        }
+
+        return odPairs.toArray(new String[0]);
+
+    }
+
+    //Fixme: Only when demand is in quite standard form that each time interval has equal odpair nums.
+    public String demandCsvStr2myCsvStr(String[] csvStrArray, String[] odPairs, Double scale){
+        int startIndex = 1;
+        if(!csvStrArray[0].contains("origin")){
+            startIndex = 0;
+        }
+
+        int odPairCount=odPairs.length;
+        int timeCount = (csvStrArray.length-startIndex)/odPairCount;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(scale);
+        for(int i=0;i<odPairCount;i++){
+            sb.append(","+odPairs[i]);
+        }
+        sb.append("\n");
+
+        for(int i=0;i<timeCount;i++){
+            int currentIndex = i*odPairCount+startIndex;
+            sb.append(csvStrArray[currentIndex].split(",")[2].trim());
+            for(int j=0;j<odPairCount;j++){
+                sb.append(","+csvStrArray[currentIndex+j].split(",")[3].trim());
+            }
+            sb.append("\n");
+        }
+
+        return sb.substring(0);
+    }
+
+    public String estimatedOD2myCsvStr(int startTimeInSecond, int maxEstIter, String[] odPairs, Double scale){
+        StringBuilder sb =new StringBuilder();
+
+        sb.append(scale);
+        for(String str:odPairs){
+            sb.append(","+str);
+        }
+        sb.append("\n");
+        try {
+            int stopTimeInSecond = startTimeInSecond + intervalValue*60;
+            String initEODFile = String.format("estimatedOD[%s,%s]%d.dat",
+                    MYtime.generateDate(startTimeInSecond,":"),
+                    MYtime.generateDate(stopTimeInSecond,":"),maxEstIter);
+
+            FileInputStream f = new FileInputStream(odFlowPath + initEODFile);
+            BufferedReader b = new BufferedReader(new InputStreamReader(f));
+
+            sb.append(startTimeInSecond);
+            String line;
+            while((line=b.readLine())!=null){
+                if(line.trim().length()!=0) {
+                    sb.append("," + line.trim());
+                }
+            }
+            sb.append("\n");
+            String otherEODPath = DYNAMITPATH + "EOD.txt";
+            File thisFile = new File(otherEODPath);
+            if(thisFile.exists()) {
+                f = new FileInputStream(otherEODPath);
+                b = new BufferedReader(new InputStreamReader(f));
+                while ((line = b.readLine()) != null) {
+                    if (line.trim().length() != 0) {
+                        sb.append(line.trim());
+                        sb.append("\n");
+                    }
+                }
+            }
+            return sb.substring(0);
+
+
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+
     public HashMap<Integer,HashMap<String,Double>> demandCsvStr2mapmap(String[] csvStrArray){
         int count = csvStrArray.length;
         HashMap<Integer, HashMap<String,Double>> map = new HashMap<>();
@@ -552,7 +654,7 @@ public class InsertProcess {
     }
 
     //TODO estimatedOD string from database turn to file estimatedOD
-    public HashMap<Integer,HashMap<String, Double>> estimateODDatStr2mapmap(){
+    public HashMap<Integer,HashMap<String, Double>> estimatedODDatStr2mapmap(){
         return null;
     }
 
@@ -587,69 +689,13 @@ public class InsertProcess {
         }
     }
 
-    /*public String[] demand_loader(){
-        try {
-            FileInputStream f = new FileInputStream(demandPath);
-            BufferedReader b = new BufferedReader(new InputStreamReader(f));
-            String line;
-            int len = 0;
-            HashMap<Integer, LinkedList<double[]>> hashMap  = new HashMap<>();
-            HashMap<Integer, int[]> timeDict = new HashMap<>();
-            String[] seg = new String[3];
-            LinkedList<double[]> demandSeriesList = new LinkedList<>();
-            int[] timeSeries = new int[2];
-            Integer timeLabel;
-            double[] demandSeries = new double[3];
-            while ((line = b.readLine()) != null) {
-                len = line.length();
-                if(len>5){
-                    char firstChar = line.charAt(0);
-                    if(firstChar=='{'){
-                        demandSeries = new double[3];
-                        seg = line.substring(1, len-2).split("\\s+");
-                        demandSeries[0] = Double.parseDouble(seg[0]);
-                        demandSeries[1] = Double.parseDouble(seg[1]);
-                        demandSeries[2] = Double.parseDouble(seg[2]);
-                        demandSeriesList.add(demandSeries);
-                    }
-                    else if(firstChar <= '9' && firstChar >='0'){
-                        seg = line.trim().split("\\s+");
-                        timeSeries = new int[2];
-                        timeLabel = Integer.parseInt(seg[0]);
-                        timeSeries[0] = Integer.parseInt(seg[1]);
-                        timeSeries[1] = Integer.parseInt(seg[2]);
-                        timeDict.put(timeLabel, timeSeries);
-                        demandSeriesList = new LinkedList<>();
-                        hashMap.put(timeLabel, demandSeriesList);
-                    }
-                }
-            }
-            mainRecord.demandTagTimeMap= timeDict;
-            mainRecord.demandFlowTimeMap = hashMap;
-            Gson gson = new Gson();
-            String strOfHashMap = gson.toJson(hashMap);
-            String strOfLinkedList = gson.toJson(timeDict);
-            mainRecord.gsonOfDemandFlow = strOfHashMap;
-            String[] strList = {strOfLinkedList,strOfHashMap};
-            return strList;
-
-        }catch (FileNotFoundException fnfe){
-            fnfe.printStackTrace();
-            return new String[]{"",""};
-        }catch (Exception e){
-            e.printStackTrace();
-            return new String[]{"",""};
-        }
-    }*/
-
-    public String sensor_loader(){
+    public String sensor2myCsvStr(){
         try {
             FileInputStream f = new FileInputStream(sensorPath);
             BufferedReader b = new BufferedReader(new InputStreamReader(f));
+            StringBuilder sb = new StringBuilder();
             String line;
             int len = 0;
-            HashMap<Integer, int[]> hashMap  = new HashMap<>();
-            int[] sensorSeries = new int[1];
             int sensorCount = 0;
             while((line = b.readLine())!=null){
                 if(line.contains("}")){
@@ -659,37 +705,39 @@ public class InsertProcess {
                     sensorCount++;
                 }
             }
-
             sensorCount = sensorCount-2;
+
+            for(int i=0;i<sensorCount;i++){
+                sb.append(","+i);
+            }
+            sb.append("\n");
 
             f = new FileInputStream(sensorPath);
             b = new BufferedReader(new InputStreamReader(f));
 
             int index = 0;
             while ((line = b.readLine()) != null) {
+                line = line.trim();
                 len = line.length();
                 if(len!=0) {
                     char firstChar = line.charAt(0);
                     if (firstChar >= '0' && firstChar <= '9') {
                         String[] seg = line.trim().split("\\s+");
                         if (seg.length == 3) {
-                            sensorSeries[index] = Integer.parseInt(seg[2]);
-                            index++;
+                            sb.append(","+seg[2]);
                         }
                         else {
-                            index = 0;
-                            sensorSeries = new int[sensorCount];
-                            hashMap.put(Integer.parseInt(seg[0]), sensorSeries);
+                            sb.append(seg[0]);
+                        }
+                    }
+                    else{
+                        if(line.contains("}")){
+                            sb.append("\n");
                         }
                     }
                 }
             }
-
-            mainRecord.sensorFlowTimeMap = hashMap;
-            Gson gson = new Gson();
-            String strOfHashMap = gson.toJson(hashMap);
-            mainRecord.gsonOfSensorFlow = strOfHashMap;
-            return strOfHashMap;
+            return sb.substring(0);
 
         }catch (FileNotFoundException fnfe){
             fnfe.printStackTrace();
@@ -699,6 +747,43 @@ public class InsertProcess {
             return "";
         }
     }
+
+    public String sen_data2myCsvStr(String senType){
+        try {
+            FileInputStream f;
+            BufferedReader b;
+            StringBuilder sb = new StringBuilder();
+
+            for(int i=0;i<intervalNum;i++){
+                String flowTimeSpamp=timespan_generator(i+1,"","-");
+                f= new FileInputStream(String.format("%s%s_%s.out",sen_path,senType,flowTimeSpamp));
+                b= new BufferedReader(new InputStreamReader(f));
+                String line ="";
+                line = b.readLine().trim();
+
+                if(i==0){
+                    line = line.replaceAll("\\s+",",");
+                    sb.append(line+"\n");
+                }
+
+                while((line=b.readLine())!=null){
+                    line = line.trim().replaceAll("\\s+",",");
+                    sb.append(line+"\n");
+                }
+            }
+
+
+            return sb.substring(0);
+
+        }catch (FileNotFoundException fnfe){
+            fnfe.printStackTrace();
+            return"";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
 
     public Double readDemandScaleFactor(String demandPath){
         try {
@@ -734,22 +819,19 @@ public class InsertProcess {
         String[] strList = datetimestr.split("\\s+");
         String dateStr = strList[0];
         String timeStr = strList[1];
-        MYtime myt = new MYtime();
-
-        String currentIntervalTimeStr = simuStartTimeStr;
 
         String[] histODCsvStrArray = demand_loader_get_csvString(histODCsvPath);
         String[] mitsimODCsvStrArray = demand_loader_get_csvString(mitsimODCsvPath);
+        String[] odPairArray = getOdPairArrayFromDemandCsvStr(histODCsvStrArray);
         mainRecord.histODScaleFactor = readDemandScaleFactor(histODPath);
         mainRecord.mitsimODScaleFactor = readDemandScaleFactor(histODPath);
-        String histODMyCsvStr = mapmap2myCsvStr(demandCsvStr2mapmap(histODCsvStrArray),mainRecord.histODScaleFactor);
-        String mitsimODMyCsvStr = mapmap2myCsvStr(demandCsvStr2mapmap(mitsimODCsvStrArray),mainRecord.mitsimODScaleFactor);
-        //String histODMyCsvStr = Arrays.toString(histODMyCsvStrArray);
-        //String mitsimODMyCsvStr = Arrays.toString(mitsimODMyCsvStrArray);
+        String histODMyCsvStr = demandCsvStr2myCsvStr(histODCsvStrArray,odPairArray,mainRecord.histODScaleFactor);
+        mainRecord.histODFlowMyCsvString = histODMyCsvStr;
+        String mitsimODMyCsvStr = demandCsvStr2myCsvStr(mitsimODCsvStrArray,odPairArray, mainRecord.mitsimODScaleFactor);
+        mainRecord.mitsimODFlowMyCsvString =mitsimODMyCsvStr;
+        String sensorStr = sensor2myCsvStr();
+        mainRecord.sensorMyCsvString =sensorStr;
 
-        String sensorStr = sensor_loader();
-
-        HashMap<Integer, int[]> odFlowArrayTimeMap = new HashMap<>();
         HashMap<Integer, int[]> sensorDataArrayTimeMap = new HashMap<>();
 
         HashMap<Integer,int[]> sen_flw_dict=sen_flw_dict_generator();
@@ -757,49 +839,31 @@ public class InsertProcess {
 
         HashMap<Integer,Double> precision = CalculatePerformance();
 
-        for(int i =1;i<=intervalNum;i++){
-            String flowTimeSpamp=timespan_generator(i,":",",");
-            myt.getDate(flowTimeSpamp.split(",")[0]);
-            int absoluteSec = myt.getAbsoluteSecond();
-            String estOD_filePath= odFlowPath+"estimatedOD["+ flowTimeSpamp +"]"+i*MaxEstIter+".dat";
-            String sensorData_filePath = sensorDataPath+"Sim"+i*MaxEstIter+".dat";
-            if(i>1) {
-                currentIntervalTimeStr = getNextTime(currentIntervalTimeStr,intervalValue*60,":");
-            }
-
-            odFlowArrayTimeMap.put(absoluteSec, flow_array_generator(estOD_filePath));
-            sensorDataArrayTimeMap.put(absoluteSec, flow_array_generator(sensorData_filePath));
-        }
-
-
         mainRecord.dtaparamId = dtaparamData.dtaparamId;
         mainRecord.networkId = networkData.networkId;
         mainRecord.behaviorId = behaviorData.behaviorId;
         mainRecord.supplyparamId = supplyData.supplyparamId;
         mainRecord.runningDate = dateStr;
         mainRecord.runningTime = timeStr;
-        mainRecord.simulationDate = dateStr;
         mainRecord.simulationStartTime = simuStartTimeStr;
         mainRecord.simulationStopTime = simuStopTimeStr;
         mainRecord.intervalNum = intervalNum;
 
-        //mainRecord.histODFlowMyCsvArray = histODMyCsvStrArray;
-        //mainRecord.mitsimODFlowMyCsvArray = mitsimODMyCsvStrArray;
-        mainRecord.odFlowArrayTimeMap = odFlowArrayTimeMap;
         mainRecord.sensorDataArrayTimeMap = sensorDataArrayTimeMap;
         mainRecord.sen_Flw_TimeMap = sen_flw_dict;
         mainRecord.sen_Spd_TimeMap = sen_spd_dict;
         mainRecord.precisionTimeMap = precision;
 
+        String odFlowListStr = estimatedOD2myCsvStr(MYtime.generateSeconds(simuStartTimeStr,":"),dtaparamData.maxEstIter,odPairArray,mainRecord.histODScaleFactor);
+        mainRecord.estimatedODFlowMyCsvString = odFlowListStr;
+
+        String sen_flw_str = sen_data2myCsvStr("sen_flw_Est");//gson.toJson(sen_flw_dict);
+        mainRecord.sen_flwMyCsvString = sen_flw_str;
+        String sen_spd_str = sen_data2myCsvStr("sen_spd_Est");//gson.toJson(sen_spd_dict);
+        mainRecord.sen_spdMyCsvString = sen_spd_str;
 
         Gson gson = new Gson();
-
-        String odFlowListStr = gson.toJson(odFlowArrayTimeMap);
-        String sensorDataListStr = gson.toJson(sensorDataArrayTimeMap);
-
-
-        String sen_flw_str = gson.toJson(sen_flw_dict);
-        String sen_spd_str = gson.toJson(sen_spd_dict);
+        //String sensorDataListStr = gson.toJson(sensorDataArrayTimeMap);
         String precisionStr = gson.toJson(precision);
         Tool.println(String.format("%d, %d, %d, %d, %d, %d",histODMyCsvStr.length(),mitsimODMyCsvStr.length(),
                 sensorStr.length(),odFlowListStr.length(),sensorStr.length(),sen_flw_str.length(),sen_spd_str.length()));
@@ -808,19 +872,17 @@ public class InsertProcess {
                         "runningDate, runningTime, simulationDate," +
                         "simulationStartTime,simulationStopTime,intervalNum," +
                         "histOD_flow, histOD_scale, mitsimOD_flow, mitsimOD_scale,sensor_flow," +
-                        "estimateOd,sensorData,"+
-                        "sen_flw,sen_spd,result_precision) "+
-                        "VALUES(%d,%d,%d,%d,'%s','%s','%s','%s','%s',%d ,'%s',%f,'%s',%f,'%s','%s','%s','%s','%s','%s')",
+                        "estimatedOd,sen_flw,sen_spd,result_precision) "+
+                        "VALUES(%d,%d,%d,%d,'%s','%s','%s','%s','%s',%d ,'%s',%f,'%s',%f,'%s','%s','%s','%s','%s')",
                 id_list.get(0),id_list.get(1),id_list.get(2),id_list.get(3),
-                dateStr,timeStr,dateStr,
+                dateStr,timeStr,mainRecord.simulationDate,
                 simuStartTimeStr,simuStopTimeStr,intervalNum,
                 histODMyCsvStr,mainRecord.histODScaleFactor,mitsimODMyCsvStr, mainRecord.mitsimODScaleFactor, sensorStr
-                ,odFlowListStr,sensorDataListStr,
-                sen_flw_str,sen_spd_str,precisionStr);
+                ,odFlowListStr, sen_flw_str,sen_spd_str,precisionStr);
 
         DBD.sqlUpdate(command,shallPrintSQL);
         List<String> result = DBD.sqlQuery(String.format("SELECT dataid FROM main WHERE " +
-                "runningDate ='%s' and runningTime='%s' ",dateStr,timeStr),shallPrintSQL);
+                "simulationDate='%s' ",mainRecord.simulationDate),shallPrintSQL);
         mainRecord.dataId = Integer.parseInt(result.get(0).trim());
 
         Tool.println("Insert main record " + mainRecord.dataId);
@@ -1001,8 +1063,6 @@ public class InsertProcess {
                 &&IsBehaviorDataValid()
                 &&IsSupplyDataValid()
                 &&IsMainRecordValid()){
-
-
             return true;
         }
 
@@ -1020,7 +1080,6 @@ public class InsertProcess {
         if(seg.length!= dtaparamColumnNum){
             return false;
         }
-
         if(Integer.parseInt(seg[0])!=dtaparamData.dtaparamId){
             return false;
         }
@@ -1144,68 +1203,39 @@ public class InsertProcess {
             return false;
         }
 
-        //if(!Tool.testStringSame(queryResult("main","histOD_flow"),mainRecord.histODFlowCsvString)){
-        //    return false;
-        //}
 
         if(Double.parseDouble(queryResult("main","histOD_scale"))!=mainRecord.histODScaleFactor){
             return false;
         }
 
-        //if(!Tool.testStringSame(queryResult("main","mitsimOD_flow"),mainRecord.mitsimODFlowCsvString)){
-        //    return false;
-        //}
 
         if(Double.parseDouble(queryResult("main","mitsimOD_scale"))!=mainRecord.mitsimODScaleFactor){
             return false;
         }
 
-        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("estimateOD",
-                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
-                mainRecord.odFlowArrayTimeMap)){
+
+        //3*DEMAND(HIST MITSIM ESTMIATE) SENSOR SEN_FLOW SEN_SPD
+        if(!Tool.testStringSame(queryResult("main","histOD_flow"),mainRecord.histODFlowMyCsvString)){
             return false;
         }
 
-        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("sensorData",
-                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
-                mainRecord.sensorDataArrayTimeMap)){
+        if(!Tool.testStringSame(queryResult("main","mitsimOD_flow"),mainRecord.mitsimODFlowMyCsvString)){
             return false;
         }
 
-        if(!Tool.testIntArrayMap((HashMap) GetJsonObjectFromDatabase("sen_flw",
-                new TypeToken<HashMap<Integer,int[]>>(){}.getType()),
-                mainRecord.sen_Flw_TimeMap)){
+        if(!Tool.testStringSame(queryResult("main","estimatedOD"),mainRecord.estimatedODFlowMyCsvString)){
             return false;
         }
 
-        if(!Tool.testDoubleArrayMap((HashMap) GetJsonObjectFromDatabase("sen_spd",
-                new TypeToken<HashMap<Integer,double[]>>(){}.getType()),
-                mainRecord.sen_Spd_TimeMap)){
+        if(!Tool.testStringSame(queryResult("main","sensor_flow"),mainRecord.sensorMyCsvString)){
             return false;
         }
 
-// FIXME! TIME CONSUMING- just compare gson str? that maybe way much faster~
-//        if(!Tool.testDoubleLinkedListArrayMap((HashMap) GetJsonObjectFromDatabase("demand_flow",
-//                new TypeToken<HashMap<Integer,LinkedList<double[]>>>(){}.getType()),
-//                mainRecord.demandFlowTimeMap)){
-//            return false;
-//        }
-//
-//        if(!Tool.testIntLinkedListArrayMap((HashMap) GetJsonObjectFromDatabase("sensor_flow",
-//                new TypeToken<HashMap<Integer,LinkedList<int[]>>>(){}.getType()),
-//                mainRecord.sensorFlowTimeMap)){
-//            return false;
-//        }
-
-        String gsonStr_Table = queryResult("main","demand_flow");
-
-        if(!Tool.testStringSame(mainRecord.gsonOfDemandFlow,gsonStr_Table)){
+        if(!Tool.testStringSame(queryResult("main","sen_flw"),mainRecord.sen_flwMyCsvString)){
             return false;
         }
 
-        gsonStr_Table = queryResult("main","sensor_flow");
-
-        if(!Tool.testStringSame(mainRecord.gsonOfSensorFlow,gsonStr_Table)){
+        if(!Tool.testStringSame(queryResult("main","sen_spd"),mainRecord.sen_spdMyCsvString)){
             return false;
         }
 
@@ -1295,6 +1325,9 @@ public class InsertProcess {
                     case "MITSIM":
                         MITSIMPATH = Tool.unquote(segList[1]);
                         break;
+                    case "METADATA":
+                        METADATAPATH = Tool.unquote(segList[1]);
+                        break;
                 }
             }
 
@@ -1383,14 +1416,43 @@ public class InsertProcess {
         }
     }
 
+    public void ReadFromMetaDataFile() {
+        try {
+            String line;
+            FileInputStream f = new FileInputStream( METADATAPATH);
+            BufferedReader b = new BufferedReader(new InputStreamReader(f));
+            while ((line = b.readLine()) != null) {
+                String realLine = Tool.unComment(line).trim();
+                String[] segList = realLine.split("=");
+                if (segList.length == 2) {
+
+                    switch (segList[0].trim()) {
+                        case "simulationDate":
+                            String str = Tool.unquote(segList[1]);
+                            mainRecord.simulationDate = str;
+                            break;
+                    }
+                }
+            }
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args){
-        String path="config/param.config";
+        String path=DatabaseDriver.PATH;
         if(args!=null && args.length>0){
             path = args[0];
         }
         InsertProcess dbi = new InsertProcess();
 
+        dbi.InitRecordInstance();
+
         dbi.UpdatePathFromFile(path);
+
+        dbi.ReadFromMetaDataFile();
 
         DBD.UpdatePathFromFile();
 
@@ -1398,7 +1460,7 @@ public class InsertProcess {
 
         Tool.println("Load data path and database configuraion");
 
-        dbi.InitRecordInstance();
+
 
         Tool.println("Handling inserting CONFIG TABLE process~");
         dbi.id_list.add(dbi.dtaparam_loader());
