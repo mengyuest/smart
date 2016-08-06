@@ -9,6 +9,8 @@ import java.io.*;
  */
 public class ReadProcess {
     public static DatabaseDriver DBD = new DatabaseDriver();
+    public static String[] bufferedOdPair;
+    public static double bufferedFactor;
     public Boolean shallPrintSQL = false;
 
     public String queryResultString(String date, String tableName,String columnName){
@@ -73,6 +75,51 @@ public class ReadProcess {
 
     public void saveMITSIMODFlowToFile(String dataStr, String filePath){
 
+    }
+
+    //include time col but exclude odpair row
+    public double[][] getEstimateOdFlowToArray(String dataStr) {
+        bufferedOdPair = getOdPairArrayFromDemandFile(dataStr);
+        bufferedFactor = Double.parseDouble(dataStr.split(",")[0]);
+        String[] segment = dataStr.trim().split("\n");
+        String[] subSegment = segment[1].trim().split(",");
+        int subcount = subSegment.length;
+
+        double[][] matrix = new double[segment.length - 1][subcount];
+
+        for (int i = 1; i < segment.length; i++) {
+            subSegment = segment[i].trim().split(",");
+            for (int j = 0; j < subcount; j++) {
+                matrix[i - 1][j] = Double.parseDouble(subSegment[j]);
+            }
+        }
+        return matrix;
+    }
+
+    public String getEstimateOdFlowToString(double[][] matrix){
+        StringBuilder sb= new StringBuilder();
+        int count = bufferedOdPair.length;
+        sb.append(bufferedFactor);
+        for(int i=0;i<count;i++){
+            sb.append(","+bufferedOdPair[i]);
+        }
+        sb.append("\n");
+        int[] size = Tool.getSizeOfMatrix(matrix);
+        for(int i=0;i<size[0];i++){
+            sb.append((int)matrix[i][0]);
+            for(int j=1;j<size[1];j++){
+                double left = matrix[i][j] % 1.0;
+                if (left <0.1)                {
+                    sb.append(String.format(",%d",(int)matrix[i][j]));
+                }else if(left>0.9){
+                    sb.append(String.format(",%d",(int)matrix[i][j])+1);
+                }else {
+                    sb.append(String.format(",%.3f",matrix[i][j]));
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.substring(0);
     }
 
     public void saveEstimatedODFlowToFile(String dataStr, String rootDirPath, int maxEstIter, int minutes){

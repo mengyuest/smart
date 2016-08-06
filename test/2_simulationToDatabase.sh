@@ -48,7 +48,7 @@ do
 	metadataFileName=$(echo ${tempArray[1]}|xargs)
 	echo "simulationDate=${DATE[$I-1]}" > $metadataFileName
 
-
+	print "Check date: ${DATE[$I-1]}"
 	java -cp $Gson_Jar:$PostgreSQL_Jar:${Src_Path} util/RowDateChecker "${DATE[$I-1]}"	
 	STATUS=$?
 	if [[ $STATUS = 1 ]];then
@@ -56,9 +56,16 @@ do
 		continue
 	fi
 
+	let simIndex=($I-1)%10+1 
+	printf -v simIndex "%02d" $simIndex
+
 	# Alternate the demand file in MITSIM directory with the ith demand file genertated
-	(cp ${Perturb_Demand_Dat_Path}demand_MY_${index}.dat ${MITSIM_Path}$Demand_File)
-	(cp ${Perturb_Demand_Csv_Path}demand_MY_${index}.csv ${MITSIM_Path}$Demand_Csv_File)
+	(cp ${Perturb_Demand_Dat_Path}demand_MY_${simIndex}.dat ${MITSIM_Path}$Demand_File)
+	(cp ${Perturb_Demand_Csv_Path}demand_MY_${simIndex}.csv ${MITSIM_Path}$Demand_Csv_File)
+
+	# TODO:Update historical data in DynaMIT
+	print "Update process: HOD for ${DATE[$I-1]}"
+	java -cp $Gson_Jar:$PostgreSQL_Jar:${Src_Path} util/UpdateProcess "${DATE[$I-1]}"
 
 	# Cleanup files from the backup dir
 	print "Clear backup..."

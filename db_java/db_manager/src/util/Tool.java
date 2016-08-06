@@ -376,6 +376,15 @@ public class Tool {
         }
     }
 
+    public static int[] getSizeOfMatrix(double[][] matrix){
+        int [] size = new int[2];
+        int count = matrix.length;
+        double []projection = matrix[0];
+        size[1] = projection.length;
+        size[0] = count;
+        return size;
+    }
+
 
     public static void println(String a){
         System.out.println("THU>>>"+a);

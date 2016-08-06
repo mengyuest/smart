@@ -102,7 +102,6 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 
 \begin{frame}
 \frametitle{Table definition}
-%TODO need a diagram to describe the compose of the database record
 \includegraphics[width = 0.8\textwidth]{table.png}
 \end{frame}
 
@@ -135,13 +134,12 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 \end{itemize}
 \includegraphics[width = 0.5\textwidth]{screenshot_table.png}
 \includegraphics[width = 0.5\textwidth]{screenshot_pgadmin.png}
-%TODO needs a picture to show database config and table
 \end{frame}
 
 
 
 \begin{frame}
-\frametitle{Insert process}
+\frametitle{Insert process(main table)}
 \begin{itemize}
 \item dtaparam.dat
 \item behavior.dat
@@ -157,7 +155,13 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 \end{frame}
 
 \begin{frame}
-\frametitle{Update process}
+\frametitle{Update process(hod table)}
+main::estimatedOD $=>$ hod::historicalOD
+\begin{itemize}
+\item Last EstimatedOD
+\item Moving Average(SMA,EMA)
+\item Smoothing Model
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -168,25 +172,28 @@ SELECT estimatedOD FROM hod WHERE ...
 \begin{frame}
 \frametitle{Screen-shot(Start)}
 \includegraphics[width = 0.6\textwidth]{screenshot_2.png}
-%TODO render serveral screenshots 
 \end{frame}
 
 \begin{frame}
 \frametitle{Screen-shot(End)}
 \includegraphics[width = 0.6\textwidth]{screenshot_1.png}
-%TODO render serveral screenshots 
 \end{frame}
 
 \begin{frame}
 \frametitle{Screen-shot(Error)}
 Check for conflict primary key DATE
 \includegraphics[width = 0.6\textwidth]{screenshot_e.png}
-%TODO render serveral screenshots 
 \end{frame}
 
 \section{Test Result}
 \begin{frame}
 \frametitle{Test}
+\begin{itemize}
+\item 17:00-17:20,10 DAYS,1633 OD-pairs
+\item using different update algorithm()
+\item examined by difference output by MITSIM
+\end{itemize}
+%TODO here we needs a formula.
 \end{frame}
 
 \begin{frame}
