@@ -2,12 +2,10 @@
 \defcounter {refsection}{0}\relax 
 \beamer@endinputifotherversion {3.24pt}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {1}{Background}{3}{0}{1}
+\beamer@sectionintoc {1}{Motivation}{3}{0}{1}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {2}{Implement}{8}{0}{2}
+\beamer@sectionintoc {2}{Methodology}{9}{0}{2}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {3}{Test Result}{20}{0}{3}
+\beamer@sectionintoc {3}{Experiment}{20}{0}{3}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {4}{Summary}{23}{0}{4}
-\defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {5}{Future work}{25}{0}{5}
+\beamer@sectionintoc {4}{Summary}{29}{0}{4}

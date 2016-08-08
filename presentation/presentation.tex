@@ -6,8 +6,8 @@
 \usecolortheme{beaver}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
+\usepackage{graphicx}
 \graphicspath{{picture/}}
- 
 %Information to be included in the title page:
 \title[DynaMIT-Database Infrastructure]
 {Historical Database for DynaMIT2.0}
@@ -17,8 +17,8 @@
 \institute[Dep.Automation,Tsinghua]
 {Department of Automation,Tsinghua University, China}
 
-\date[August 6, 2016]
-{SMART FM-IRG, August 6, 2016}
+\date[August 8, 2016]
+{SMART FM-IRG, August 8, 2016}
  
 \logo{\includegraphics[height=1.5cm]{combine-logo.png}}
 
@@ -45,20 +45,20 @@
 
 
 
-\section{Background}
+\section{Motivation}
 
 \begin{frame}
 \frametitle{Starting point}
 \setbeamerfont{footnote}{size=\tiny}
 The aim of the on–line calibration is to use the off–line calibrated parameter
-values as starting points and perform a local optimization step towards the unobserved true values\footnote{ Constantinos,A(2004) On–line Calibration for Dynamic Traffic Assignment}.\\ 
+values as starting points and perform a local optimization step towards the unobserved true values\footnote{ Constantinos, A. (2004) On–line Calibration for Dynamic Traffic Assignment}.\\ 
 \vspace{0.5in}
-Precise historical OD flow $=>$ Accurate estimated OD-flow \\
+Precise historical OD-flow $=>$ Accurate estimated OD-flow \\
 
 \end{frame}
 
 \begin{frame}
-\frametitle{OD-Flow Analysis}
+\frametitle{OD-Flow Analysis(1)}
 Altered by many factors:
 \begin{itemize}
 \item rush hour
@@ -66,10 +66,20 @@ Altered by many factors:
 \item holiday
 \item ...
 \end{itemize}
-%TODO Maybe needs a comparison of od flow between morning an noon.
+%TODO Maybe needs a comparison of od-flow between morning an noon.
 \vspace{0.5in}
 Needs to be stratified under several tags
 \end{frame}
+
+\begin{frame}
+\frametitle{OD-flow analysis(2)}
+\begin{itemize}
+\item The historical data may be not accurate at first.\\
+\vspace{0.5in}
+\item Needs update process
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Insights}
@@ -88,7 +98,7 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 %TODO Here needs discussion with HaiZheng.
 
 
-\section{Implement}
+\section{Methodology}
 \begin{frame}
 \frametitle{Functions}
 \begin{itemize}
@@ -106,7 +116,7 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 \end{frame}
 
 \begin{frame}
-\frametitle{Flow Diagram}
+\frametitle{Flow diagram}
 \includegraphics[width = 1.0\textwidth]{flow-chart.png}
 \end{frame}
 
@@ -157,10 +167,14 @@ To design a program that can automatically \textbf{save} results from the DynaMI
 \begin{frame}
 \frametitle{Update process(hod table)}
 main::estimatedOD $=>$ hod::historicalOD
+\vspace{0.3in}
+
+Update algorithm:
 \begin{itemize}
 \item Last EstimatedOD
-\item Moving Average(SMA,EMA)
+\item Moving Average
 \item Smoothing Model
+\item ...
 \end{itemize}
 \end{frame}
 
@@ -170,60 +184,189 @@ SELECT estimatedOD FROM hod WHERE ...
 \end{frame}
 
 \begin{frame}
-\frametitle{Screen-shot(Start)}
-\includegraphics[width = 0.6\textwidth]{screenshot_2.png}
+\frametitle{Screen-shot}
+\includegraphics[width = 0.8\textwidth]{scst_1.png}
+\vspace{0.1in}
+\includegraphics[width = 0.8\textwidth]{scst_2.png}
+\vspace{0.1in}
+\includegraphics[width = 0.8\textwidth]{scst_3.png}
+\vspace{0.1in}
+\includegraphics[width = 0.8\textwidth]{scst_4.png}
 \end{frame}
 
 \begin{frame}
-\frametitle{Screen-shot(End)}
-\includegraphics[width = 0.6\textwidth]{screenshot_1.png}
+\includegraphics[width=0.8\textwidth]
+{scst_5.png}
+\vspace{0.1in}
+\includegraphics[width = 0.8\textwidth]{scst_6.png}
 \end{frame}
+\section{Experiment}
 
 \begin{frame}
-\frametitle{Screen-shot(Error)}
-Check for conflict primary key DATE
-\includegraphics[width = 0.6\textwidth]{screenshot_e.png}
-\end{frame}
-
-\section{Test Result}
-\begin{frame}
-\frametitle{Test}
+\frametitle{Purpose}
 \begin{itemize}
-\item 17:00-17:20,10 DAYS,1633 OD-pairs
-\item using different update algorithm()
-\item examined by difference output by MITSIM
+\item Examine the historical database for DynaMIT
+\vspace{0.3in}
+\item Compare different algorithms for update process
 \end{itemize}
-%TODO here we needs a formula.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Design}
+\begin{itemize}
+\item Mode: DynaMIT+MITSIM,\, with on-line calibration
+\item Parameters: \,15:00-21:00,\,10 days,\,1633 OD-pairs,\, 650 sensor flow counts
+\item \textbf{Algorithms for 'update process':}
+\begin{itemize}
+\item Fixed historical OD-flow
+\item Last estimated OD-flow
+\item Simple moving average
+\item Exponential moving average
+\item Smoothing Model
+\end{itemize}
+\item Performance analysis: RMSN for sensor data
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Result}
+\frametitle{Update algorithm(1)}
+Fixed historical OD-flow (\textbf{control group}):\\
+
+\[ x_h^{H,n}=x_h^{H,n-1}=Const \]
+
+Last estimated OD-flow:\\
+\[ x_h^{H,n}=\hat{x}_h^n\]
+
+Notation:
+\begin{itemize}
+\item $x_h^{H,n} \sim$ Historical OD-flow at interval $h$ after $n$ days
+\item $\hat{x}_h^{n} \sim$ Estimated OD-flow at interval $h$ on the $n^{th}$ day
+\end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Update algorithm(2):Moving Average}
+
+Simple moving average:\\
+\[ x_h^{H,n}=\frac{1}{M}(\sum_{k=0}^{M-1} \hat{x}_h^{n-k})\]
+Exponential moving average:\\
+\[ x_h^{H,n}=\alpha\cdot \hat{x}_h^n+ (1-\alpha) x_h^{H,n-1}\]
+
+
+Notation:
+\begin{itemize}
+\item $x_h^{H,n} \sim$ Historical OD-flow at interval $h$ after $n$ days
+\item $\hat{x}_h^{n} \sim$ Estimated OD-flow at interval $h$ on the $n^{th}$ day
+\item $M\sim$ Window size
+\item $\alpha\sim$ Degree of weighting decrease between zero and one
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\setbeamerfont{footnote}{size=\tiny}
+\frametitle{Update algorithm(3):Smoothing Model\footnote{Kalidas, A. (1996) Estimation and Prediction of Time-Dependent Origin-Destination Flows}}
+Smoothing model formula:\\
+\[ x_h^{H,n}=x_h^{H,n-1}+\alpha(\hat{x}_h^n-x_h^{H,n-1}) \]
+
+Notation:\\
+\begin{itemize}
+\item $x_h^{H,n} \sim$ Historical OD-flow at interval h after n days
+\item $\hat{x}_h^{n} \sim$ Estimated OD-flow at interval h on the $n^{th}$ day 
+\item $\alpha \sim$ A scalar between zero and one
+\end{itemize}
+
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Measurement}
+Root Mean Square Normalized(RMSN):
+\[ RMSN=\frac{\sqrt{N\sum_{i=1}^{N} (y_i-y_i^*)^2}}{\sum_{i=1}^{N}y_i^*} \]
+
+\begin{itemize}
+\item $y_i\sim$ The $i^{th}$ sensor data calculated from DynaMIT
+\item $y_i^*\sim$ The $i^{th}$ sensor data generated from MITSIM/hist\_flow 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data excel}
+\begin{itemize}
+\item FHOD-Fixed Historical OD-flow
+\item LEOD-Last Estimated OD-flow
+\item SMA -Simple Moving Average
+\item EMA -Exponential Moving Average
+\item SM  -Smoothing Model 
+\end{itemize}
+
+\begin{table}
+\begin{center}
+\scalebox{0.7}{
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ & FHOD & LEOD & SMA & EMA & SM\\ \hline
+Day01 &  &  &  &  &\\ \hline
+Day02 &  &  &  &  &\\ \hline
+Day03 &  &  &  &  &\\ \hline
+Day04 &  &  &  &  &\\ \hline
+Day05 &  &  &  &  &\\ \hline
+Day06 &  &  &  &  &\\ \hline
+Day07 &  &  &  &  &\\ \hline
+Day08 &  &  &  &  &\\ \hline
+Day09 &  &  &  &  &\\ \hline
+Day10 &  &  &  &  &\\ \hline
+\end{tabular}}
+\end{center}
+\end{table}
+\end{frame}
+
+\begin{frame}
+\frametitle{Anticipation}
+\begin{itemize}
+\item Update process reduces the error
+\item Error descends with iteration
+\item Algorithm with slow change may perform better than drastic one
+\end{itemize}
+\end{frame}
+
 
 \section{Summary}
 \begin{frame}
-\frametitle{Conclusion}
+\frametitle{Finished progress}
 \begin{itemize}
-\item Run simulation and recording automatically
-\item Easy to debug and add new tags for database
-\item Potential value
+\item Implemented a database-based simulation infrastructure 
+\begin{itemize}
+\item Define table
+\item Grab and insert data
+\item Top-level script
+\end{itemize}
+\item Designed 'update process' test
 \end{itemize}
 \end{frame}
 
-\section{Future work}
 \begin{frame}
-\frametitle{Future work}
+\frametitle{Future research}
 \begin{itemize}
+\item The experiment given above
 \item Find source for the metadata
-\item Use XXX algorithm for "update process"
-\item Use XXX algorithm for "render historical data"
 \item Refactoring \& Documentation
 \end{itemize}
 \end{frame}
- 
+
+%\begin{frame}
+%\frametitle{Acknowledgement}
+%\setlength\parindent{24pt}
+%\indent \it{Thanks Haizheng, Ravi, Samarth and Arun for offering me loads of help during the research period. Hope we still have chance to cooperate in the near future!}
+%\end{frame}
+
 \begin{frame}
-\frametitle{Question}
-Any questions?
+\frametitle{Questions}
+\begin{center}
+\includegraphics[width = 0.3\textwidth]{question.png}
+\end{center}
 \end{frame}
  
  

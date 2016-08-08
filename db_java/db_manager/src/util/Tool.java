@@ -390,23 +390,25 @@ public class Tool {
         System.out.println("THU>>>"+a);
     }
 
-    public void println(int n){
+    public static void println(int n){
         System.out.println(n);
     }
 
-    public void println(Boolean b){
+    public static void println(double n){System.out.println(String.format("%f",n));}
+
+    public static void println(Boolean b){
         System.out.println(b);
     }
 
-    public void print(String str){
+    public static void print(String str){
         System.out.print(str);
     }
 
-    public void print(int n){
+    public static void print(int n){
         System.out.print(n);
     }
 
-    public void print(Boolean b){
+    public static void print(Boolean b){
         System.out.print(b);
     }
 }

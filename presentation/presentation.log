@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.7.17)  6 AUG 2016 21:17
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.7.17)  8 AUG 2016 21:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1341,7 +1341,7 @@ No file presentation.bbl.
 Package biblatex Info: Reference section=0 on input line 36.
 Package biblatex Info: Reference segment=0 on input line 36.
 (./presentation.nav)
-<picture/combine-logo.png, id=37, 384.43625pt x 323.2075pt>
+<picture/combine-logo.png, id=33, 384.43625pt x 323.2075pt>
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
@@ -1427,165 +1427,188 @@ Package pdftex.def Info: picture/combine-logo.png used on input line 72.
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 82.
+Package pdftex.def Info: picture/combine-logo.png used on input line 81.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [6
 
 ]
-LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <12> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 87.
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 87.
+Package pdftex.def Info: picture/combine-logo.png used on input line 92.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [7
 
 ]
-(./presentation.toc)
-File: picture/combine-logo.png Graphic file (type png)
- <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 91.
-(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [8
-
-]
+LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <12> not available
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 97.
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 100.
+Package pdftex.def Info: picture/combine-logo.png used on input line 97.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [8
+
+] (./presentation.toc)
+File: picture/combine-logo.png Graphic file (type png)
+
+<use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 101.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [9
 
 ]
-<picture/table.png, id=314, 677.53125pt x 474.77374pt>
+File: picture/combine-logo.png Graphic file (type png)
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 110.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [10
+
+]
+<picture/table.png, id=333, 677.53125pt x 474.77374pt>
 File: picture/table.png Graphic file (type png)
  <use picture/table.png>
-Package pdftex.def Info: picture/table.png used on input line 106.
+Package pdftex.def Info: picture/table.png used on input line 116.
 (pdftex.def)             Requested size: 272.55751pt x 191.00005pt.
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 106.
+Package pdftex.def Info: picture/combine-logo.png used on input line 116.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [10
+ [11
 
  <./picture/table.png (PNG copy)>]
-<picture/flow-chart.png, id=342, 976.64874pt x 616.3025pt>
+<picture/flow-chart.png, id=362, 976.64874pt x 616.3025pt>
 File: picture/flow-chart.png Graphic file (type png)
 
 <use picture/flow-chart.png>
-Package pdftex.def Info: picture/flow-chart.png used on input line 111.
+Package pdftex.def Info: picture/flow-chart.png used on input line 121.
 (pdftex.def)             Requested size: 340.6956pt x 214.9944pt.
 
-Overfull \vbox (0.31203pt too high) detected at line 111
+Overfull \vbox (0.31203pt too high) detected at line 121
  []
 
 File: picture/combine-logo.png Graphic file (type png)
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 111.
+Package pdftex.def Info: picture/combine-logo.png used on input line 121.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [11
+ [12
 
  <./picture/flow-chart.png (PNG copy)>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 124.
+(Font)              <10.95> on input line 134.
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 124.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 134.
 
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 124.
+Package pdftex.def Info: picture/combine-logo.png used on input line 134.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [12
+ [13
 
 ]
-<picture/screenshot_table.png, id=399, 501.875pt x 209.78375pt>
+<picture/screenshot_table.png, id=419, 501.875pt x 209.78375pt>
 File: picture/screenshot_table.png Graphic file (type png)
 
 <use picture/screenshot_table.png>
-Package pdftex.def Info: picture/screenshot_table.png used on input line 137.
+Package pdftex.def Info: picture/screenshot_table.png used on input line 147.
 (pdftex.def)             Requested size: 170.3478pt x 71.20708pt.
 
-<picture/screenshot_pgadmin.png, id=400, 402.00188pt x 199.49532pt>
+<picture/screenshot_pgadmin.png, id=420, 402.00188pt x 199.49532pt>
 File: picture/screenshot_pgadmin.png Graphic file (type png)
 
 <use picture/screenshot_pgadmin.png>
-Package pdftex.def Info: picture/screenshot_pgadmin.png used on input line 137.
+Package pdftex.def Info: picture/screenshot_pgadmin.png used on input line 147.
 
 (pdftex.def)             Requested size: 170.3478pt x 84.53323pt.
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 137.
+Package pdftex.def Info: picture/combine-logo.png used on input line 147.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [13
+ [14
 
  <./picture/screenshot_table.png> <./picture/screenshot_pgadmin.png>]
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 155.
-(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
- [14
-
-]
-File: picture/combine-logo.png Graphic file (type png)
- <use picture/combine-logo.png>
 Package pdftex.def Info: picture/combine-logo.png used on input line 165.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [15
 
 ]
 File: picture/combine-logo.png Graphic file (type png)
-
-<use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 170.
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 179.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [16
 
 ]
-<picture/screenshot_2.png, id=513, 724.7075pt x 661.47125pt>
-File: picture/screenshot_2.png Graphic file (type png)
-
-<use picture/screenshot_2.png>
-Package pdftex.def Info: picture/screenshot_2.png used on input line 175.
-(pdftex.def)             Requested size: 204.41943pt x 186.57327pt.
 File: picture/combine-logo.png Graphic file (type png)
- <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 175.
+
+<use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 184.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [17
 
- <./picture/screenshot_2.png>] <picture/screenshot_1.png, id=541, 723.70375pt x
- 642.4pt>
-File: picture/screenshot_1.png Graphic file (type png)
+]
+<picture/scst_1.png, id=532, 724.7075pt x 76.285pt>
+File: picture/scst_1.png Graphic file (type png)
+ <use picture/scst_1.png>
+Package pdftex.def Info: picture/scst_1.png used on input line 195.
+(pdftex.def)             Requested size: 272.55751pt x 28.6906pt.
 
-<use picture/screenshot_1.png>
-Package pdftex.def Info: picture/screenshot_1.png used on input line 180.
-(pdftex.def)             Requested size: 204.41943pt x 181.44893pt.
+<picture/scst_2.png, id=533, 722.7pt x 182.6825pt>
+File: picture/scst_2.png Graphic file (type png)
+ <use picture/scst_2.png>
+Package pdftex.def Info: picture/scst_2.png used on input line 195.
+(pdftex.def)             Requested size: 272.55751pt x 68.89601pt.
+
+<picture/scst_3.png, id=534, 723.70375pt x 75.28125pt>
+File: picture/scst_3.png Graphic file (type png)
+
+<use picture/scst_3.png>
+Package pdftex.def Info: picture/scst_3.png used on input line 195.
+(pdftex.def)             Requested size: 272.55751pt x 28.35214pt.
+ <picture/scst_4.png, id=535, 724.7075pt x 81.30376pt>
+File: picture/scst_4.png Graphic file (type png)
+
+<use picture/scst_4.png>
+Package pdftex.def Info: picture/scst_4.png used on input line 195.
+(pdftex.def)             Requested size: 272.55751pt x 30.57814pt.
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 180.
+Package pdftex.def Info: picture/combine-logo.png used on input line 195.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [18
 
- <./picture/screenshot_1.png>] <picture/screenshot_e.png, id=568, 724.7075pt x 
-385.44pt>
-File: picture/screenshot_e.png Graphic file (type png)
+ <./picture/scst_1.png> <./picture/scst_2.png> <./picture/scst_3.png> <./pictur
+e/scst_4.png>]
+<picture/scst_5.png, id=562, 724.7075pt x 521.95pt>
+File: picture/scst_5.png Graphic file (type png)
+ <use picture/scst_5.png>
+Package pdftex.def Info: picture/scst_5.png used on input line 202.
+(pdftex.def)             Requested size: 272.55751pt x 196.30418pt.
 
-<use picture/screenshot_e.png>
-Package pdftex.def Info: picture/screenshot_e.png used on input line 186.
-(pdftex.def)             Requested size: 204.41943pt x 108.71643pt.
+<picture/scst_6.png, id=563, 723.70375pt x 121.45375pt>
+File: picture/scst_6.png Graphic file (type png)
+
+<use picture/scst_6.png>
+Package pdftex.def Info: picture/scst_6.png used on input line 202.
+(pdftex.def)             Requested size: 272.55751pt x 45.74147pt.
+
+Overfull \vbox (1.85934pt too high) detected at line 202
+ []
+
 File: picture/combine-logo.png Graphic file (type png)
- <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 186.
+<use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 202.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [19
 
- <./picture/screenshot_e.png>] (./presentation.toc)
+ <./picture/scst_5.png> <./picture/scst_6.png>] (./presentation.toc)
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 188.
+Package pdftex.def Info: picture/combine-logo.png used on input line 203.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [20
 
@@ -1593,45 +1616,59 @@ Package pdftex.def Info: picture/combine-logo.png used on input line 188.
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 197.
+Package pdftex.def Info: picture/combine-logo.png used on input line 212.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [21
 
 ]
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 201.
+Package pdftex.def Info: picture/combine-logo.png used on input line 230.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [22
 
 ]
-(./presentation.toc)
 File: picture/combine-logo.png Graphic file (type png)
- <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 203.
+
+<use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 246.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [23
 
 ]
 File: picture/combine-logo.png Graphic file (type png)
-
-<use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 211.
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 264.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [24
 
-] (./presentation.toc)
+]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <17.28> on input line 281.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 281.
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <17.28> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 281.
+
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <10> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 281.
+
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 281.
+LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <7> not available
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 281.
+
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 213.
+Package pdftex.def Info: picture/combine-logo.png used on input line 281.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [25
 
 ]
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 222.
+Package pdftex.def Info: picture/combine-logo.png used on input line 293.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [26
 
@@ -1639,16 +1676,59 @@ Package pdftex.def Info: picture/combine-logo.png used on input line 222.
 File: picture/combine-logo.png Graphic file (type png)
 
 <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 227.
+Package pdftex.def Info: picture/combine-logo.png used on input line 324.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [27
 
 ]
 File: picture/combine-logo.png Graphic file (type png)
  <use picture/combine-logo.png>
-Package pdftex.def Info: picture/combine-logo.png used on input line 232.
+Package pdftex.def Info: picture/combine-logo.png used on input line 333.
 (pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
  [28
+
+]
+(./presentation.toc)
+File: picture/combine-logo.png Graphic file (type png)
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 336.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [29
+
+]
+File: picture/combine-logo.png Graphic file (type png)
+
+<use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 348.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [30
+
+]
+File: picture/combine-logo.png Graphic file (type png)
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 357.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [31
+
+]
+<picture/question.png, id=935, 2090.81125pt x 2310.6325pt>
+File: picture/question.png Graphic file (type png)
+
+<use picture/question.png>
+Package pdftex.def Info: picture/question.png used on input line 370.
+(pdftex.def)             Requested size: 102.20972pt x 112.92934pt.
+File: picture/combine-logo.png Graphic file (type png)
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 370.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [32
+
+ <./picture/question.png>]
+File: picture/combine-logo.png Graphic file (type png)
+ <use picture/combine-logo.png>
+Package pdftex.def Info: picture/combine-logo.png used on input line 375.
+(pdftex.def)             Requested size: 50.76451pt x 42.67912pt.
+ [33
 
 ]
 \tf@nav=\write7
@@ -1660,39 +1740,44 @@ Package pdftex.def Info: picture/combine-logo.png used on input line 232.
 \tf@snm=\write9
 \openout9 = `presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 233.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 233.
-
-(./presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 233.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 233.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 376.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 376.
+ (./presentation.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 376.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 376.
 Package rerunfilecheck Info: File `presentation.out' has not changed.
-(rerunfilecheck)             Checksum: 0971304A3DF2EB662704ABCC2F9CBA91;223.
+(rerunfilecheck)             Checksum: F847A4B0023BF963815037BE81A95888;178.
 Package logreq Info: Writing requests to 'presentation.run.xml'.
 \openout1 = `presentation.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 233.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 376.
  ) 
 Here is how much of TeX's memory you used:
- 21164 strings out of 493304
- 386951 string characters out of 6139871
- 794634 words of memory out of 5000000
- 24064 multiletter control sequences out of 15000+600000
- 49316 words of font info for 55 fonts, out of 8000000 for 9000
+ 21231 strings out of 493304
+ 387929 string characters out of 6139871
+ 802634 words of memory out of 5000000
+ 24116 multiletter control sequences out of 15000+600000
+ 64441 words of font info for 74 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  49i,17n,53p,936b,660s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
-ips/lm/lm-mathit.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmss12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/t
-exmf/fonts/type1/public/lm/lmss10.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mss12.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/
-fonts/type1/public/lm/lmss8.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx1
-0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10
-.pfb>
-Output written on presentation.pdf (28 pages, 483442 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/fonts/en
+c/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/u
+sr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}</usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.p
+fb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/t
+ype1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmss10.pfb></u
+sr/share/texmf/fonts/type1/public/lm/lmss12.pfb></usr/share/texmf/fonts/type1/p
+ublic/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmss8.pfb></usr/sha
+re/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/publi
+c/lm/lmsso12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso8.pfb></usr/share
+/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm
+/lmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/m
+sam10.pfb>
+Output written on presentation.pdf (33 pages, 673478 bytes).
 PDF statistics:
- 900 PDF objects out of 1000 (max. 8388607)
- 834 compressed objects within 9 object streams
- 62 named destinations out of 1000 (max. 500000)
- 141 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1059 PDF objects out of 1200 (max. 8388607)
+ 975 compressed objects within 10 object streams
+ 71 named destinations out of 1000 (max. 500000)
+ 153 words of extra memory for PDF output out of 10000 (max. 10000000)
 
