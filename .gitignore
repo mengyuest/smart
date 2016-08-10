@@ -16,3 +16,4 @@ test/backup*
 test/demand_csv
 test/demand_dat
 test/bak*
+test/DynaMIT_openloop

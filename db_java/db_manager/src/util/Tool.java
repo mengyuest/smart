@@ -1,21 +1,20 @@
-
-/**
- * Created by dynamit on 7/28/16.
- */
-
 package util;
-
-import sun.awt.image.ImageWatched;
-
-import javax.sound.sampled.Line;
 import java.io.File;
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * <p>This class implements some useful tool function for the whole project</p>
+ * <p>Be free to implement new method (or you call tips) under this class which may be used everywhere</p>
+ * @author Meng Yue
+ * @since 2016/07/28
+ * */
 public class Tool {
+    /**
+     *This function is to uncomment the string
+     * @param str This is the raw string which may contain '#' or '//'
+     * @return String This returns the string without comment part
+     */
     public static String unComment(String str){
         if(str!=null && (str.contains("//") || str.contains("#"))){
             int count = str.length();
@@ -49,6 +48,11 @@ public class Tool {
         return str;
     }
 
+    /**
+     * This function is to unquote the string
+     * @param str The raw string formats like '...' or "..."
+     * @return String The relished string without quotation mark
+     */
     public static String unquote(String str){
         if(str==null){
             return null;
@@ -64,6 +68,11 @@ public class Tool {
         return str;
     }
 
+    /**
+     * This function is to parse a String to double array
+     * @param arrayStr Format: XXX123.0,0.01,2.14,3.33YYY which X is not numeric or '-', and Y is not numeric
+     * @return double array Parsed from the string given
+     */
     public static double[] parseDoubleArray(String arrayStr){
         while(arrayStr!=null&&arrayStr.length()>1&&arrayStr.charAt(0)!='-'&&(arrayStr.charAt(0)<'0'||arrayStr.charAt(0)>'9')){
             arrayStr = arrayStr.substring(1);
@@ -83,6 +92,11 @@ public class Tool {
         return null;
     }
 
+    /**
+     * This function is to parse a String to int array
+     * @param arrayStr Format: XXX123,0,2,3YYY which X is not numeric or '-', and Y is not numeric
+     * @return int array Parsed from the string given
+     */
     public static int[] parseIntArray(String arrayStr){
         while(arrayStr!=null&&arrayStr.length()>1&&arrayStr.charAt(0)!='-'&&(arrayStr.charAt(0)<'0'||arrayStr.charAt(0)>'9')){
             arrayStr = arrayStr.substring(1);
@@ -207,161 +221,6 @@ public class Tool {
         if(stra.compareTo(strb)!=0){
             return false;
         }
-        return true;
-    }
-
-    public static String intArrayToString(int[] a){
-        if(a == null){
-            return null;
-        }
-        int count = a.length;
-        if(count==0){
-            return "";
-        }
-        String str = "";
-        for(int i=0;i<count;i++){
-            str = a[i]+",";
-        }
-        return str.substring(0,str.length()-1);
-    }
-
-    public static String doubleArrayToString(double[] a){
-        if(a == null){
-            return null;
-        }
-        int count = a.length;
-        if(count==0){
-            return "";
-        }
-        String str = "";
-        for(int i=0;i<count;i++){
-            str = a[i]+",";
-        }
-        return str.substring(0,str.length()-1);
-    }
-
-
-
-    public static boolean testMap(HashMap a, HashMap b){
-        if(a==null||b==null){
-            return false;
-        }
-        if(a.size()!=b.size()){
-            return false;
-        }
-        if(a.keySet()!=b.keySet()){
-            return false;
-        }
-
-        for(Object key:a.keySet()){
-            if(a.get(key)!=b.get(key)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean testIntArrayMap(HashMap a, HashMap b){
-        if(a==null||b==null){
-            return false;
-        }
-        if(a.size()!=b.size()){
-            return false;
-        }
-        if(a.keySet().iterator().next().getClass()!=b.keySet().iterator().next().getClass()){
-            return false;
-        }
-        for(Object key:a.keySet()){
-            Object o1 = a.get(key);
-            Object o2 = b.get(key);
-            int[] oo1 = (int[]) o1;
-            int[] oo2 = (int[]) o2;
-            if(!testStringSame(intArrayToString(oo1) ,intArrayToString(oo2))){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean testDoubleArrayMap(HashMap a, HashMap b){
-        if(a==null||b==null){
-            return false;
-        }
-        if(a.size()!=b.size()){
-            return false;
-        }
-        if(a.keySet().iterator().next().getClass()!=b.keySet().iterator().next().getClass()){
-            return false;
-        }
-        for(Object key:a.keySet()){
-            Object o1 = a.get(key);
-            Object o2 = b.get(key);
-            double[] oo1 = (double[]) o1;
-            double[] oo2 = (double[]) o2;
-            if(!testStringSame(doubleArrayToString(oo1) ,doubleArrayToString(oo2))){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean testDoubleLinkedListArrayMap(HashMap a, HashMap b){
-        if(a==null||b==null){
-            return false;
-        }
-        if(a.size()!=b.size()){
-            return false;
-        }
-        if(a.keySet().iterator().next().getClass()!=b.keySet().iterator().next().getClass()){
-            return false;
-        }
-        for(Object key:a.keySet()){
-            Object o1 = a.get(key);
-            Object o2 = b.get(key);
-            LinkedList<double[]> oo1 = (LinkedList<double[]>) o1;
-            LinkedList<double[]> oo2 = (LinkedList<double[]>) o2;
-            if(oo1.size()!=oo2.size()) {
-                return false;
-            }
-            int count = oo1.size();
-            for(int i=0;i<count;i++){
-                if(!testStringSame(doubleArrayToString(oo1.get(i)),doubleArrayToString(oo2.get(i)))){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean testIntLinkedListArrayMap(HashMap a, HashMap b){
-        if(a==null||b==null){
-            return false;
-        }
-        if(a.size()!=b.size()){
-            return false;
-        }
-        if(a.keySet().iterator().next().getClass()!=b.keySet().iterator().next().getClass()){
-            return false;
-        }
-        for(Object key:a.keySet()){
-            Object o1 = a.get(key);
-            Object o2 = b.get(key);
-            LinkedList<int[]> oo1 = (LinkedList<int[]>) o1;
-            LinkedList<int[]> oo2 = (LinkedList<int[]>) o2;
-            if(oo1.size()!=oo2.size()) {
-                return false;
-            }
-            int count = oo1.size();
-            for(int i=0;i<count;i++){
-                if(!testStringSame(intArrayToString(oo1.get(i)),intArrayToString(oo2.get(i)))){
-                    return false;
-                }
-            }
-        }
-
         return true;
     }
 

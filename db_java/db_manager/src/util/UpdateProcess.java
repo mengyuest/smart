@@ -1,8 +1,5 @@
 package util;
 
-import sun.print.CUPSPrinter;
-
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,7 +7,12 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
 /**
- * Created by dynamit on 8/6/16.
+ * This is the module implementing the update process method.
+ * The dictionary is just for remember the index order of date simply.
+ * It should be altered or changed into more proper structure in the future.
+ * The fifth method seems to have a little problem in the simulation. It shall be fixed before use.
+ * @author  Meng Yue
+ * @since 2016/08/06
  */
 public class UpdateProcess {
 
@@ -167,14 +169,6 @@ public class UpdateProcess {
         rp.saveODFlowToFile(rp.getEstimateOdFlowToString(result),DynaMITpath+tempHODfile);
         copyFile(DynaMITpath+tempHODfile,DynaMITpath+targetHODname);
     }
-
-    //TODO params: launching date
-    //TODO default date settings:
-    //TODO 2016/01/01-2016/01/10 fixed...
-    //TODO 2016/02/01-2016/02/10 last...
-    //TODO 2016/03/01-2016/03/10 simpleMoveAverage...
-    //TODO 2016/04/01-2016/04/10 expontenial...
-    //TODO 2016/05/01-2016/05/10 average...
 
     public static void main(String[] args)throws IOException {
         //if(args.length==0) {return;}

@@ -1,16 +1,18 @@
 package util;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by dynamit on 8/4/16.
+ * This is a simple module to check if the certain date record is inserted into the database.
+ * Because currently, everyday has only one record, and the date has been set as Primary Key in the main table.
+ * If in the future the date is not unique anymore, this class can be disposed.
+ * @author Meng Yue
+ * @since 2016/08/06
  */
 public class RowDateChecker {
 
     public static DatabaseDriver DBD = new DatabaseDriver();
 
-    //receive date and check if it has been in the main database already.
     public static void main(String[] args){
         if(args.length!=1){
             Tool.println("PARAMETER FAULT: should use only one parameter representing date");

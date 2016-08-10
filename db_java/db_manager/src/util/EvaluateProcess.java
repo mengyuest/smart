@@ -3,16 +3,23 @@ package util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 
 /**
- * Created by dynamit on 8/8/16.
+ * <p>This module is to calculate the performance index for the estimation for sensor flow
+ * The basic idea is to first grab the estimate data and the real data from the database
+ * Then calculate the error use the following formula</p>
+ * @author Meng Yue
+ * @since 2016/08/06
  */
 public class EvaluateProcess {
+
     public static ReadProcess rp = new ReadProcess();
 
-    public static LinkedList<Double> lld = new LinkedList<>();
-
+    /**
+     * Calculate the error between the estimated sensor data and real sensor data under certain date.
+     * @param date Which day of the record
+     * @return double The error
+     */
     public static double calculateError(String date){
         double error = 0;
         String sensorStr = rp.queryResultString(date, "main", "sensor_flow");

@@ -8,26 +8,39 @@
 
 
 # loading file path
-test_Dir=~/student/mengyue/drill/test/
-Config_File=~/student/mengyue/drill/db_java/db_manager/config/param.config
-Dat2Csv_Script_File=~/student/mengyue/drill/test/script/demand_dat2csv_new.py
-Perturb_Script_File=~/student/mengyue/drill/test/script/Perturb_demand_new.py
-Perturb_Input_Path=~/student/mengyue/drill/test/originDemand/
-Perturb_Demand_Dat_Path=~/student/mengyue/drill/test/demand_dat/
-Perturb_Demand_Csv_Path=~/student/mengyue/drill/test/demand_csv/
-DynaMIT_Path=~/student/mengyue/drill/test/DynaMIT/
-MITSIM_Path=~/student/mengyue/drill/test/MITSIM/
-Dtaparam_Path=~/student/mengyue/drill/test/DynaMIT/
-Gson_Jar=~/student/mengyue/drill/db_java/db_manager/lib/gson-2.5.jar
-PostgreSQL_Jar=~/student/mengyue/drill/db_java/db_manager/lib/postgresql-9.4.1209.jre6.jar
-Src_Path=~/student/mengyue/drill/db_java/db_manager/out/production/db_manager
-DB_Save_Path=~/student/mengyue/drill/test/DBSAVE/
+
+# -common used path
+WORKSPACE=~/student/mengyue/drill
+JAVAPROJ=$WORKSPACE/db_java/db_manager
+TEST=$WORKSPACE/test
+SCRIPT=$TEST/script
+
+# -specific path 
+Config_File=$JAVAPROJ/config/param.config
+Gson_Jar=$JAVAPROJ/lib/gson-2.5.jar
+PostgreSQL_Jar=$JAVAPROJ/lib/postgresql-9.4.1209.jre6.jar
+Src_Path=$JAVAPROJ/out/production/db_manager
+
+test_Dir=$TEST/
+ChangDtaParam_Script_File=$SCRIPT/changeDtaParamToOpenLoop.py
+GenHistFlow_Script_File=$SCRIPT/runDM_AggregateDynamitrSenFlow.py
+Dat2Csv_Script_File=$SCRIPT/demand_dat2csv_new.py
+Perturb_Script_File=$SCRIPT/Perturb_demand_new.py
+
+Perturb_Input_Path=$TEST/originDemand/
+Perturb_Demand_Dat_Path=$TEST/demand_dat/
+Perturb_Demand_Csv_Path=$TEST/demand_csv/
+
+DynaMIT_Path=$TEST/DynaMIT/
+MITSIM_Path=$TEST/MITSIM/
+Dtaparam_Path=$TEST/DynaMIT/
+DB_Save_Path=$TEST/DBSAVE/
 
 # running parameters
 # the days you want to run at
 # the DAY_NUM should no bigger than the size of the DATE array!!! 
-DAY_NUM=50
-DATE[0]="2016/01/01"
+DAY_NUM=1
+DATE[0]="2016/06/02"
 DATE[1]="2016/01/02"
 DATE[2]="2016/01/03"
 DATE[3]="2016/01/04"

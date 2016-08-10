@@ -14,6 +14,19 @@ import java.util.List;
 import java.nio.file.Paths;
 
 //TODO: write driver config to the file
+
+/**
+ * <p>This module is designed as a driver to database</p>
+ * <p>Basic functions are query, insert and update command</p>
+ * <p>The class depends on the postgresql-9.4.1209.jre6
+ * If you want to use the new one, please also update it in the library</p>
+ * <p>Basically, there are three types of SQL command in this driver
+ * sqlExecute, sqlUpdate and sqlQuery. Use the first for setup and drop table.
+ * Use the second to update, alter or delete the record. Use the last one for querying</p>
+ * <p>REMEMBER IN THIS DRIVER, SQL COMMAND HAS NO ";" IN THE END, unlike psql command in terminal.</p>
+ * @author Meng Yue
+ * @since 2016/07/28
+ */
 public class DatabaseDriver {
     static String PATH = "/home/dynamit/student/mengyue/drill/db_java/db_manager/config/param.config";
     static  Boolean RUN_LOCAL = true;
@@ -28,8 +41,11 @@ public class DatabaseDriver {
     Connection conn = null;
 
 
-
-    // Should we use finalize???
+    /**
+     * <p>This function is for FINALLY close the connection to database</p>
+     * <p>Normally, you should close the connection every time you open a connection and don't want to use it any more</p>
+     * @throws Throwable
+     */
     protected void finalize() throws Throwable {
         try {
             if (!conn.isClosed()) {
@@ -42,6 +58,11 @@ public class DatabaseDriver {
         }
     }
 
+    /**
+     * <p>This is the connection process</p>
+     * <p>Has two modes of connection, depends on the switch parameter RUN_LOCAL</p>
+     * @return boolean Not currently used in this version
+     */
     public boolean connect() {
         try {
             //STEP 2: Register JDBC driver
@@ -68,6 +89,9 @@ public class DatabaseDriver {
         return false;
     }
 
+    /**
+     * <p>This is the disconnection process</p>
+     */
     public void disconnect() {
         try {
             conn.close();
@@ -79,16 +103,22 @@ public class DatabaseDriver {
         }
     }
 
+    /**
+     * <p>This is the interface for rendering information in different type T from querying results</p>
+     * <p>Not currently used in this version</p>
+     * @param <T>
+     */
     public interface ResultSetConsumer<T>{
         T consume(ResultSet rs);
     }
 
-    public String consume(ResultSet rs) {
-        if(rs!=null)
-            return rs.toString();
-        return "";
-    }
-
+    /**
+     * <p>This is the function used as setup or insertion</p>
+     * <p>If you needs to setup or drop a table, use this function</p>
+     * <p>It has the header of THU which you can change as you like</p>
+     * @param sqlCommand Input the SQL command you want Postgre to execute. Remember UNLIKE in psql, there is NO ";" at the end!!!
+     * @param printCommand Whether to print the command to the screen or not
+     */
     public void sqlExecute(String sqlCommand, Boolean printCommand){
         Statement st = null;
         try{
@@ -112,6 +142,12 @@ public class DatabaseDriver {
         }
     }
 
+    /**
+     * <This is the function used as update command
+     * @param sqlCommand Input the SQL command you want Postgre to update. Remember UNLIKE in psql, there is NO ";" at the end!!!
+     * @param printCommand Whether to print the command to the screen or not
+     * @return int Represents how many rows have been modified
+     */
     public int sqlUpdate(String sqlCommand, Boolean printCommand){
         int num=0;
         PreparedStatement st=null;
@@ -136,6 +172,12 @@ public class DatabaseDriver {
         }
     }
 
+    /**
+     * <p>This is the function used as query command</p>
+     * @param sqlCommand Input the SQL command you want Postgre to update. Remember UNLIKE in psql, there is NO ";" at the end!!!
+     * @param printCommand Whether to print the command to the screen or not
+     * @return List<String> Represents the query result from the database
+     */
     public List<String> sqlQuery(String sqlCommand, Boolean printCommand) {
         Statement stmt = null;
         ResultSet rs = null;
@@ -182,7 +224,14 @@ public class DatabaseDriver {
         }
     }
 
-
+    /**
+     * <p>This is the function used as query command, but with interface to parse the result</p>
+     * <p>This is not currently used</p>
+     * @param sqlCommand Input the SQL command you want Postgre to update. Remember UNLIKE in psql, there is NO ";" at the end!!!
+     * @param consumer This is for the interface to parse different type of query result
+     * @param printCommand Whether to print the command to the screen or not
+     * @return List<T> Represents the query result from the database
+     */
     public <T> List<T> sqlQuery(String sqlCommand, ResultSetConsumer<T> consumer, Boolean printCommand) {
         Statement stmt = null;
         ResultSet rs = null;
@@ -223,7 +272,9 @@ public class DatabaseDriver {
         }
     }
 
-    //TODO: Update the file paths and other parameters from file
+    /**
+     * This function updates the file paths and other parameters from the configuration file
+     */
     public void UpdatePathFromFile(){
         try {
             FileInputStream f = new FileInputStream(PATH);
@@ -267,7 +318,11 @@ public class DatabaseDriver {
         }
     }
 
-
+    /**
+     * <p>This is just a simple demo for how to use the database driver </p>
+     * <p>The following procedure setup a new table, add some columns, populate some records, do some query work and at last drop the table</p>
+     * @param args is not currently used
+     */
     public static void main(String[] args) {
         ResultSet rs = null;
         DatabaseDriver dbd = new DatabaseDriver();

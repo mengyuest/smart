@@ -32,6 +32,19 @@ rm -fr COPY
 mkdir COPY
 rm -fr DBSAVE
 mkdir DBSAVE
+rm -fr DynaMIT_openloop
+cp -r DynaMIT DynaMIT_openloop
+print "setup DynaMIT_openloop for calculating hist_flow"
+cd DynaMIT_openloop
+mkdir sen_flw_data
+cp demand_backup.dat $Demand_File
+cp dtaparam_openloop.dat dtaparam.dat
+cd ..
+
+
+
+#python $ChangeDtaParam_Script_File DynaMIT_openloop/dtaparam.dat
+
 
 print "histFile=$Hist_File \ndemandFile=$Demand_File \nPreparation finished, start loop..."
 
@@ -63,9 +76,14 @@ do
 	(cp ${Perturb_Demand_Dat_Path}demand_MY_${simIndex}.dat ${MITSIM_Path}$Demand_File)
 	(cp ${Perturb_Demand_Csv_Path}demand_MY_${simIndex}.csv ${MITSIM_Path}$Demand_Csv_File)
 
-	# TODO:Update historical data in DynaMIT
+	# Update historical data in DynaMIT
 	print "Update process: HOD for ${DATE[$I-1]}"
 	java -cp $Gson_Jar:$PostgreSQL_Jar:${Src_Path} util/UpdateProcess "${DATE[$I-1]}"
+
+	# Update hist_flw data for Online-calibration use 5-mean Method
+	print "Update hist_flw data"
+	(python $GenHistFlow_Script_File)
+	(mv DynaMIT_openloop/sen_flw_data/hist_flw.csv DynaMIT/Hist_flw_pert_0.75nZero_5min_Gaussian.csv)
 
 	# Cleanup files from the backup dir
 	print "Clear backup..."

@@ -43,7 +43,6 @@ public class InsertProcess {
     private String simuStartTimeStr;
     private String simuStopTimeStr;
 
-
     private DtaparamData dtaparamData;
     private NetworkData networkData;
     private BehaviorData behaviorData;
@@ -315,28 +314,6 @@ public class InsertProcess {
         }
         return str;
     }
-
-
-    public Double[] stringToDoubleArray(String arraySrtr){
-        String[] strList = arraySrtr.split(",");
-        Double[] array = new Double[strList.length];
-
-        for(int i=0;i<strList.length;i++){
-            array[i] = Double.parseDouble(strList[i]);
-        }
-        return array;
-    }
-
-    public Integer[] stringToIntArray(String arrayStr){
-        String[] strList = arrayStr.split(",");
-        Integer[] array = new Integer[strList.length];
-
-        for(int i=0;i<strList.length;i++){
-            array[i] = Integer.parseInt(strList[i]);
-        }
-        return array;
-    }
-
 
     public int supplyparam_loader() {
         String[] paraList={"SegmentId","freeFlowSpeed","jamDensity","alpha","beta","SegmentCapacity","Vmin","Kmin"};

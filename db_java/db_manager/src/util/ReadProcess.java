@@ -5,13 +5,17 @@ import data.MYtime;
 import java.io.*;
 
 /**
- * Created by dynamit on 8/3/16.
+ * <p>This is a module read record from database and then save the data to the file in exactly DynaMIT format</p>
+ * <p>Basically, it convert six type of data, sourced from mitsim, historical and estimated od flow, and sensor, sen_flw and sen_spd</p>
+ * @author Meng Yue
+ * @since 2016/08/03
  */
 public class ReadProcess {
     public static DatabaseDriver DBD = new DatabaseDriver();
     public static String[] bufferedOdPair;
     public static double bufferedFactor;
     public Boolean shallPrintSQL = false;
+
 
     public String queryResultString(String date, String tableName,String columnName){
         return DBD.sqlQuery(String.format("SELECT %s FROM %s WHERE simulationDate='%s'",columnName,tableName,date),Boolean.FALSE).get(0);
@@ -44,12 +48,6 @@ public class ReadProcess {
         try {
             Tool.IfNotExistThenCreateDir(filePath);
             BufferedWriter b = new BufferedWriter( new FileWriter(filePath));
-            // do stuff
-
-//            FileOutputStream f = new FileOutputStream(filePath);
-//            BufferedWriter b = new BufferedWriter(new OutputStreamWriter(f,"utf-8"));
-//            b.write("helloworld!");
-//
             for(int i=1;i<count;i++){
                 String[] dataArray = segment[i].trim().split(",");
                 b.write(String.format("%s 0 %d\n",dataArray[0],factor));
@@ -73,11 +71,6 @@ public class ReadProcess {
 
     }
 
-    public void saveMITSIMODFlowToFile(String dataStr, String filePath){
-
-    }
-
-    //include time col but exclude odpair row
     public double[][] getEstimateOdFlowToArray(String dataStr) {
         bufferedOdPair = getOdPairArrayFromDemandFile(dataStr);
         bufferedFactor = Double.parseDouble(dataStr.split(",")[0]);
@@ -220,9 +213,6 @@ public class ReadProcess {
         DBD.connect();
         System.out.println("length="+args.length);
 
-
-        //String filePath = "/home/dynamit/student/mengyue/drill/test/_save/";
-        //int index=13;
         if(args.length!=2){
             return ;
         }

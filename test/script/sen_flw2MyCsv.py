@@ -1,0 +1,43 @@
+sen_flw_path_prefix="data/sen_flw_Est_"
+sen_flw_csv_path="data/sen_flw.csv"
+startTime=64800
+endTime=67500
+interval=300
+count=650
+
+def tt(t):
+	t1=t+300
+	return "%02d%02d%02d-%02d%02d%02d.out"%(t/3600,t%3600/60,t%60,t1/3600,t1%3600/60,t1%60) 
+
+n=(endTime-startTime)/interval
+m=interval/60
+
+table=[]
+record=[]
+
+for i in range(0,n):
+	f=open(sen_flw_path_prefix+tt(startTime+i*interval),'r')
+	lines = f.readlines()	
+	record=[0]*(count+1)
+	for j in range(1,m+1):
+		strs=lines[j].strip().split("\t")
+		for k in range(1,count+1):
+			record[k] = record[k]+int(strs[k])
+	for k in range(1,count+1):
+		record[k] = record[k]*1.0/60
+	record[0]=startTime+i*interval
+	table.append(record)
+	f.close()
+
+f=open(sen_flw_csv_path,'w')
+strLine="0"
+for i in range(0,count):
+	strLine = strLine+","+str(i)
+f.write(strLine+"\n")
+
+for i in range(0,n):
+	strLine=str(table[i][0])
+	for j in range(1,count+1):
+		strLine=strLine+","+str(table[i][j])
+	f.write(strLine+"\n")
+f.close()
